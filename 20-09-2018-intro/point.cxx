@@ -30,6 +30,16 @@ public:
 	void set_y(int y) {
 		y_ = y;
 	}
+
+	void move_by(int x, int y) {
+		x_ += x;
+		y_ += y;
+	}
+
+	void move_by(Point p) {
+		x_ += p.x_;
+		y_ += p.y_;
+	}
 };
 
 int main(){
@@ -38,5 +48,7 @@ int main(){
 	p1.print();
 	p2.print();
 	cout << "Value of x_ is: " << p1.get_x() << endl;
+	p1.move_by(p2);
+	p1.print();
 	return 0;
 }
