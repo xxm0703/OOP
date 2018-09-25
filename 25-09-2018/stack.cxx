@@ -22,7 +22,6 @@ public:
 
     int pop() {
         if(empty()) {
-            cout << "OOPPSSS! stack is empty..." << endl;
             return 0;
         }
         return data_[--top_];
@@ -30,7 +29,7 @@ public:
 
     void push(int value) {
         if(full()){ 
-            cout << "OOPPSSS! stack is empty..." << endl;
+            cout << "OOPPSSS! stack is full..." << endl;
             return;
         }
         data_[top_++] = value;
