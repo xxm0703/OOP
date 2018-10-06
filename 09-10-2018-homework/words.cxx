@@ -37,7 +37,7 @@ public:
 };
 
 class Sentence : public Basic<string> {
-	Parentheses parants_;
+	Parentheses parantheses_;
 	int flags_;
 public:
 	Sentence() {
@@ -55,6 +55,9 @@ public:
 			tmp.erase(tmp.begin(), tmp.begin()+15);
 			flags_ |= stoi(tmp);
 			set_flags();
+		}
+		else if (!tmp.compare("END")) {
+			throw runtime_error("ERR: PROVIDE AT LEAST ONE SENTENCE OR WORD");
 		}
 		else {
 			push(tmp);
@@ -77,8 +80,9 @@ public:
 		return count;
 	}
 
-	void check() {
-		if (!parants_.empty()) {
+
+	void check_parantheses() {
+		if (!parantheses_.empty()) {
 			throw logic_error("ERR: PROVIDE MATCHING PARENTHESES");
 		}
 	}
@@ -98,26 +102,40 @@ public:
 					(*it).pop_back();
 			}
 
-			if ((*it).front() == '(') parants_.push('(');
-			if ((*it).back() == ')') parants_.pop();
+			if ((*it).front() == '(') parantheses_.push('(');
+			if ((*it).back() == ')') parantheses_.pop();
 		}
 	}
 
 	void reset() {
 		clear();
-		parants_.clear();
+		parantheses_.clear();
 	}
 
 };
 
 class Text : public Basic<Sentence> {
+	int wc_;
+	int cc_;
 public:
-	int average_wc() {
-		float wc = 0;
+	Text() {
+		wc_ = 0;
+		cc_ = 0;
+	}
+
+	void calculate() {
 		for(vector<Sentence>::iterator it = data_.begin(); it != data_.end(); it++) {
-			wc += (*it).get_wc();
+			wc_ += (*it).get_wc();
+			cc_ += (*it).get_cc();
 		}
-		return round(wc / data_.size());
+	}
+
+	int average_wc() {
+		return round((float)wc_ / data_.size());
+	}
+
+	int average_cc() {
+		return round((float)cc_ / wc_);
 	}
 };
 
@@ -125,7 +143,13 @@ int main() {
 	string word;
 	Text text;
 	Sentence sentence;
-	sentence.set_flags();
+	try {
+		sentence.set_flags();
+	}
+	catch(runtime_error e) {
+		cout << e.what() << endl;
+		return 1;
+	}
 	while(true) {
 
 		cin >> word;
@@ -139,7 +163,7 @@ int main() {
 			if (word.back() == '.') {
 				try {
 					sentence.clean_up();
-					sentence.check();
+					sentence.check_parantheses();
 				}
 				catch(logic_error e) {
 					if (sentence.get_flags() >> 8) {
@@ -152,6 +176,7 @@ int main() {
 			}
 		}
 	}
-	cout << text.average_wc() << endl;
+	text.calculate();
+	cout << text.average_wc() << ' ' << text.average_cc() << endl;
 	return 0;
 }
