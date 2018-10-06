@@ -19,6 +19,10 @@ public:
 		data_.push_back(value);
 	}
 
+	void clear() {
+		data_.erase(data_.begin(), data_.end());
+	}
+
 };
 
 class Parentheses : public Basic<char> {
@@ -32,12 +36,37 @@ public:
 		}
 };
 
-class Sentance : public Basic<string> {
+class Sentence : public Basic<string> {
 	Parentheses parants_;
 	int flags_;
 public:
-	Sentance(int flags) {
-		flags_ = flags;
+	Sentence() {
+		flags_ = 0;
+	}
+
+	void set_flags() {
+		string tmp;
+		cin >> tmp;
+		if (!tmp.compare("strict")) {
+			flags_ |= 0x100;
+			set_flags();
+		}
+		else if (tmp.find("sentence-up-to:") != string::npos) {
+			tmp.erase(tmp.begin(), tmp.begin()+15);
+			flags_ |= stoi(tmp);
+			set_flags();
+		}
+		else {
+			push(tmp);
+		}
+	}
+
+	int get_flags() {
+		return flags_;
+	}
+
+	int get_wc() {
+		return data_.size();
 	}
 
 	int get_cc() {
@@ -48,18 +77,26 @@ public:
 		return count;
 	}
 
-	int get_wc() {
-		return data_.size();
-	}
-
 	void check() {
 		if (!parants_.empty()) {
-			throw runtime_error("ERR: PROVIDE MATCHING PARENTHESES");
+			throw logic_error("ERR: PROVIDE MATCHING PARENTHESES");
 		}
 	}
 
 	void clean_up() {
+		int max_words = flags_ & 0xFF;
+		if (max_words && data_.size() > max_words) {
+			data_.resize(max_words);
+		}
+
 		for(vector<string>::iterator it = data_.begin(); it != data_.end(); it++) {
+			switch ((*it).front()) {
+				case ')':
+					parants_.pop();
+					break;
+				case '(':
+					parants_.push('(');
+			}
 			switch ((*it).back()) {
 				case ',':
 				case ';':
@@ -76,16 +113,17 @@ public:
 	}
 
 	void reset() {
-		data_.erase(data_.begin(), data_.end());
+		clear();
+		parants_.clear();
 	}
 
 };
 
-class Text : public Basic<Sentance> {
+class Text : public Basic<Sentence> {
 public:
 	int average_wc() {
 		float wc = 0;
-		for(vector<Sentance>::iterator it = data_.begin(); it != data_.end(); it++) {
+		for(vector<Sentence>::iterator it = data_.begin(); it != data_.end(); it++) {
 			wc += (*it).get_wc();
 		}
 		return round(wc / data_.size());
@@ -95,7 +133,8 @@ public:
 int main() {
 	string word;
 	Text text;
-	Sentance sentance(0);
+	Sentence sentence;
+	sentence.set_flags();
 	while(true) {
 
 		cin >> word;
@@ -104,18 +143,21 @@ int main() {
 			break;
 		}
 		if (word.compare("-")) {
-			sentance.push(word);
+			sentence.push(word);
 
 			if (word.back() == '.') {
 				try {
-					sentance.clean_up();
-					sentance.check();
+					sentence.clean_up();
+					sentence.check();
 				}
-				catch(exception e) {
-					cout << e.what();
+				catch(logic_error e) {
+					if (sentence.get_flags() >> 8) {
+						cout << e.what() << endl;
+						return 1;
+					}
 				}
-				text.push(sentance);
-				sentance.reset();
+				text.push(sentence);
+				sentence.reset();
 			}
 		}
 	}
