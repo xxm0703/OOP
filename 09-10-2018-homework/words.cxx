@@ -90,25 +90,16 @@ public:
 		}
 
 		for(vector<string>::iterator it = data_.begin(); it != data_.end(); it++) {
-			switch ((*it).front()) {
-				case ')':
-					parants_.pop();
-					break;
-				case '(':
-					parants_.push('(');
-			}
+
 			switch ((*it).back()) {
 				case ',':
 				case ';':
 				case '.':
 					(*it).pop_back();
-					break;
-				case ')':
-					parants_.pop();
-					break;
-				case '(':
-					parants_.push('(');
 			}
+
+			if ((*it).front() == '(') parants_.push('(');
+			if ((*it).back() == ')') parants_.pop();
 		}
 	}
 
