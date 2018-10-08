@@ -25,28 +25,13 @@ public:
 
 };
 
-class Parentheses : public Basic<char> {
-public:
-		void check() {
-			if (!empty())
-				throw logic_error("ERR: PROVIDE MATCHING PARENTHESES");
-		}
-
-        char pop() {
-            if(empty())
-                throw logic_error("ERR: PROVIDE MATCHING PARENTHESES");
-            char tmp = data_.back();
-            data_.pop_back();
-            return tmp;
-        }
-};
-
 class Sentence : public Basic<string> {
-    Parentheses parantheses_;
+    char parantheses_;
     int flags_;
 public:
     Sentence() {
         flags_ = 0;
+		parantheses_ = 0;
     }
 
     string set_flags() {  // Returns the first word after flags
@@ -67,10 +52,6 @@ public:
 		return tmp;
     }
 
-    int get_flags() {
-        return flags_;
-    }
-
     int get_wc() {
         return data_.size();
     }
@@ -84,7 +65,8 @@ public:
     }
 
     void check_parantheses() {
-        parantheses_.check();
+        if (parantheses_ != 0 && flags_ >> 8)
+			throw logic_error("ERR: PROVIDE MATCHING PARENTHESES");
     }
 
 	bool check_length() {
@@ -98,7 +80,7 @@ public:
     void clean_up() {
 
         for(vector<string>::iterator it = data_.begin(); it != data_.end(); it++) {
-            while(true) {
+            while(true) {  // If there are multiple chars side by side
                 switch ((*it).back()) {
                     case ',':
                     case ';':
@@ -108,13 +90,19 @@ public:
                 }
 
                 if ((*it).front() == '(') {
-                    parantheses_.push('(');
+                    parantheses_++;
                     (*it).erase((*it).begin());  // pop_front()
                     continue;
                 }
                 if ((*it).back() == ')') {
-                    parantheses_.pop();
+                    if(--parantheses_ < 0) {
+						check_parantheses();  // Short way to throw
+					}
                     (*it).pop_back();
+
+					if((*it).back() == '.') {  // Handle paranthese after dot
+						throw logic_error("ERR: PROVIDE MATCHING PARENTHESES");
+					}
                     continue;
                 }
                 break;
@@ -124,7 +112,7 @@ public:
 
     void reset() {
         clear();
-        parantheses_.clear();
+        parantheses_ = 0;
     }
 
 };
@@ -145,11 +133,11 @@ public:
     }
 
     int average_wc() {
-        return round((float)wc_ / data_.size());
+        return round(wc_ / data_.size());
     }
 
     int average_cc() {
-        return round((float)cc_ / wc_);
+        return round(cc_ / wc_);
     }
 };
 
@@ -158,7 +146,7 @@ int main() {
 	Sentence sentence;
     Text text;
     try {
-        word = sentence.set_flags();
+        word = sentence.set_flags();  // Returns the first word after flags
     }
     catch(runtime_error e) {
         cout << e.what() << endl;
@@ -169,28 +157,27 @@ int main() {
         if (!word.compare("END")) {
             break;
         }
-        if (word.compare("-")) {
+
+		if (word.compare("-")) {  // Skip slashes
             sentence.push(word);
 
-            if (word.back() == '.') {
+            if (word.find(".") != string::npos) {  // If it contains dot
                 try {
                     if (sentence.check_length()) {
-						sentence.clean_up();
+						sentence.clean_up();  // Remove all non-alphabetic chars
 						sentence.check_parantheses();
 						text.push(sentence);
 					}
 					sentence.reset();
                 }
                 catch(logic_error e) {
-                    if (sentence.get_flags() >> 8) {
-                        cout << e.what() << endl;
-                        return 1;
-                    }
+                    cout << e.what() << endl;
+                    return 1;
                 }
             }
         }
 
-		cin >> word;
+		cin >> word;  // Get next word
     }
 
     text.calculate();
