@@ -55,7 +55,9 @@ public:
 		is >> den >> c;
 		if (c != ')') {
 			is.clear(ios_base::badbit);
+			return is;
 		}
+		r = Rational(num, den);
 		return is;
 	}
 
@@ -65,22 +67,22 @@ public:
 		return os;
 	}
 
-	void operator+=(Rational r) {
+	void operator+=(const Rational r) {
 		num_ = num_ * r.den_ + r.num_ * den_;
 		den_ = den_ * r.den_;
 	}
 
-	void operator-=(Rational r) {
+	void operator-=(const Rational r) {
 		num_ = num_ * r.den_ - r.num_ * den_;
 		den_ = den_ * r.den_;
 	}
 
-	void operator*=(Rational r) {
+	void operator*=(const Rational r) {
 		num_ *= r.num_;
 		den_ *= r.den_;
 	}
 
-	void operator/=(Rational r) {
+	void operator/=(const Rational r) {
 		num_ *= r.den_;
 		den_ *= r.num_;
 	}
@@ -89,17 +91,6 @@ public:
 
 
 int main() {
-	Rational r1(1, 2);
-	Rational r2(2, 4);
-	Rational r3(3, -6);
-
-	cout << r1;
-	cout << r2;
-	cout << r3;
-
-
-	r1 += r2;
-	cout << r1;
 
 	return 0;
 }
