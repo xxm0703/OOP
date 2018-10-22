@@ -31,7 +31,7 @@ class Rational {
 	}
 
 public:
-	Rational(long num, long den) {
+	Rational(long num=1, long den=1) {
 		if (!den)
 			throw runtime_error("Provide non-zero den...");
 
@@ -91,6 +91,13 @@ public:
 
 
 int main() {
-
+	Rational result, next;
+	cin >> result;
+	if(cin.bad()) {
+		char c;
+		cin >> c;
+		cout << c;
+	}
+	cout << r1;
 	return 0;
 }
