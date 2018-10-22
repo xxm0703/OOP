@@ -39,9 +39,30 @@ public:
 		den_ = den;
 	}
 
-	void dump() {
-		reduce();
-		cout << '(' << num_ << '/' << den_ << ')' << endl;
+	friend istream& operator>>(istream& is, Rational& r) {
+		long num, den;
+		char c;
+		is >> c;
+		if (c != '(') {
+			is.clear(ios_base::badbit);
+			return is;
+		}
+		is >> num >> c;
+		if (c != '/') {
+			is.clear(ios_base::badbit);
+			return is;
+		}
+		is >> den >> c;
+		if (c != ')') {
+			is.clear(ios_base::badbit);
+		}
+		return is;
+	}
+
+	friend ostream& operator<<(ostream& os, Rational& r) {
+		r.reduce();
+		os << '(' << r.num_ << '/' << r.den_ << ')' << endl;
+		return os;
 	}
 
 	void operator+=(Rational r) {
@@ -72,15 +93,13 @@ int main() {
 	Rational r2(2, 4);
 	Rational r3(3, -6);
 
-	r1.dump();
-	r2.dump();
-	r3.dump();
+	cout << r1;
+	cout << r2;
+	cout << r3;
 
 
 	r1 += r2;
-	r1.dump();
-
-	r1.dump();
+	cout << r1;
 
 	return 0;
 }
