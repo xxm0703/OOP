@@ -2,6 +2,8 @@
 
 using namespace std;
 
+class BadInput {};
+
 class Rational {
 	long den_, num_;
 
@@ -43,21 +45,25 @@ public:
 		long num, den;
 		char c;
 		is >> c;
-		if (c != '(') {
+        if (c == 'q') {
 			is.clear(ios_base::badbit);
-			return is;
-		}
+            return is;
+        }
+
+		if (c != '(')
+            throw BadInput();
+
 		is >> num >> c;
-		if (c != '/') {
-			is.clear(ios_base::badbit);
-			return is;
-		}
-		is >> den >> c;
-		if (c != ')') {
-			is.clear(ios_base::badbit);
-			return is;
-		}
-		r = Rational(num, den);
+
+        if (c != '/')
+            throw BadInput();
+
+        is >> den >> c;
+
+        if (c != ')')
+            throw BadInput();
+
+        r = Rational(num, den);
 		return is;
 	}
 
@@ -89,15 +95,49 @@ public:
 
 };
 
+Rational evaluate_eq();
 
 int main() {
-	Rational result, next;
-	cin >> result;
 	if(cin.bad()) {
-		char c;
-		cin >> c;
-		cout << c;
+		cout << "Quit";
+        return 0;
 	}
-	cout << r1;
-	return 0;
+}
+
+Rational evaluate_eq() {
+	Rational result, operand;
+    char operation;
+
+    cout << "> ";
+    cin >> result;
+
+    while(true) {
+
+        cin >> operation;
+
+        switch(operation) {
+        case '+':
+            result += operand;
+            break;
+        case '-':
+            result -= operand;
+            break;
+        case '*':
+            result *= operand;
+            break;
+        case '/':
+            result /= operand;
+            break;
+        case '=':
+            return result;
+        }
+
+        try {
+            cin >> operand;
+        }
+        catch(BadInput e) {
+            cout << "Invalid input format..." << endl;
+            return 1;
+        }
+    }
 }
