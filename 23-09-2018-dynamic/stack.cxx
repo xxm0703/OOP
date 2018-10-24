@@ -7,25 +7,26 @@ using namespace std;
 class StackError{};
 
 class Stack {
+	int top_, capacity_;
     int *data_;
-    int top_, capacity_;
 
 	void resize() {
 		capacity_ += STACK_STEP;
 		int *new_data = new int[capacity_];
 		copy(data_, data_+top_, new_data);
-		delete data_;
+		delete []data_;
 		data_ = new_data;
 	}
 public:
-    Stack() : top_(0),
+	Stack() : top_(0),
 	capacity_(STACK_STEP),
-	data_(new int[capacity_])
+	data_(new int[STACK_STEP])
 	{}
 
-	Stack(const Stack& st) : top_(0),
-	capacity_(STACK_STEP),
-	data_(new int[capacity_])
+	Stack(const Stack& st) :
+	top_(st.top_),
+	capacity_(st.capacity_),
+	data_(new int[st.capacity_])
 	{
 		cout << "Copy..." << endl;
 		copy(st.data_, st.data_+st.top_, data_);
@@ -33,7 +34,7 @@ public:
 
 	~Stack() {
 		cout << "Destruct..." << endl;
-		delete data_;
+		delete []data_;
 	}
 
     bool empty() const {
@@ -78,6 +79,7 @@ int main() {
 	cout << st.size() << endl;
 	st.push(33);
 	cout << st.pop() << endl;
-	delete &st;
+	Stack st1 = st;
+	cout << st1.pop() << endl;
 	return 0;
 }
