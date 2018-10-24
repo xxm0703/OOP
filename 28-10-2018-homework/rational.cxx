@@ -1,8 +1,9 @@
 #include<iostream>
+#include<exception>
 
 using namespace std;
 
-class BadInput {};
+class quit_signal {};
 
 class Rational {
 	long den_, num_;
@@ -44,31 +45,21 @@ public:
 	friend istream& operator>>(istream& is, Rational& r) {
 		long num, den;
 		char c;
-		is >> c;
+
+        is >> c;
+
         if (c == 'q') {
-			is.clear(ios_base::badbit);
-            return is;
+            throw quit_signal();
         }
 
-		if (c != '(')
-            throw BadInput();
-
 		is >> num >> c;
-
-        if (c != '/')
-            throw BadInput();
-
         is >> den >> c;
-
-        if (c != ')')
-            throw BadInput();
 
         r = Rational(num, den);
 		return is;
 	}
 
-	friend ostream& operator<<(ostream& os, Rational& r) {
-		r.reduce();
+	friend ostream& operator<<(ostream& os, const Rational& r) {
 		os << '(' << r.num_ << '/' << r.den_ << ')' << endl;
 		return os;
 	}
@@ -76,21 +67,25 @@ public:
 	void operator+=(const Rational r) {
 		num_ = num_ * r.den_ + r.num_ * den_;
 		den_ = den_ * r.den_;
+        reduce();
 	}
 
 	void operator-=(const Rational r) {
 		num_ = num_ * r.den_ - r.num_ * den_;
 		den_ = den_ * r.den_;
+        reduce();
 	}
 
 	void operator*=(const Rational r) {
 		num_ *= r.num_;
-		den_ *= r.den_;
+        den_ *= r.den_;
+        reduce();
 	}
 
 	void operator/=(const Rational r) {
 		num_ *= r.den_;
 		den_ *= r.num_;
+        reduce();
 	}
 
 };
@@ -98,22 +93,30 @@ public:
 Rational evaluate_eq();
 
 int main() {
-	if(cin.bad()) {
-		cout << "Quit";
-        return 0;
-	}
+    while(1) {
+        try {
+            cout << evaluate_eq();
+        }catch(quit_signal s) {
+            break;
+        }
+    }
+    return 0;
 }
 
 Rational evaluate_eq() {
-	Rational result, operand;
+	Rational operand, result;
     char operation;
 
     cout << "> ";
     cin >> result;
 
     while(true) {
-
         cin >> operation;
+
+        if (operation == '=')
+            return result;
+
+        cin >> operand;
 
         switch(operation) {
         case '+':
@@ -128,16 +131,6 @@ Rational evaluate_eq() {
         case '/':
             result /= operand;
             break;
-        case '=':
-            return result;
-        }
-
-        try {
-            cin >> operand;
-        }
-        catch(BadInput e) {
-            cout << "Invalid input format..." << endl;
-            return 1;
         }
     }
 }
