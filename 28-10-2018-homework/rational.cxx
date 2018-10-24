@@ -3,24 +3,16 @@
 
 using namespace std;
 
-class quit_signal {};
+class quit_signal {};  // Throwable for easy quit
 
 class Rational {
 	long den_, num_;
 
-	void standardize() {
+	void standardize() {  // Makes den_ positive
 		if (den_ < 0) {
 			den_ *= -1;
 			num_ *= -1;
 		}
-	}
-
-	void reduce() {
-		standardize();
-		long tmp = num_ < 0 ? -num_ : num_;
-		long r = gcd(tmp, den_);
-		num_ /= r;
-		den_ /= r;
 	}
 
 	long gcd(long a, long b) {
@@ -34,12 +26,20 @@ class Rational {
 	}
 
 public:
-	Rational(long num=1, long den=1) {
-		if (!den)
+	Rational(const long num=1, const long den=1) {
+		if (!den)  // Check for invalid den_
 			throw runtime_error("Provide non-zero den...");
 
 		num_ = num;
 		den_ = den;
+	}
+
+	void reduce() {
+		standardize();
+		long tmp = num_ < 0 ? -num_ : num_;
+		long r = gcd(tmp, den_);
+		num_ /= r;
+		den_ /= r;
 	}
 
 	friend istream& operator>>(istream& is, Rational& r) {
@@ -48,9 +48,8 @@ public:
 
         is >> c;
 
-        if (c == 'q') {
+        if (c == 'q')
             throw quit_signal();
-        }
 
 		is >> num >> c;
         is >> den >> c;
@@ -67,25 +66,21 @@ public:
 	void operator+=(const Rational r) {
 		num_ = num_ * r.den_ + r.num_ * den_;
 		den_ = den_ * r.den_;
-        reduce();
 	}
 
 	void operator-=(const Rational r) {
 		num_ = num_ * r.den_ - r.num_ * den_;
 		den_ = den_ * r.den_;
-        reduce();
 	}
 
 	void operator*=(const Rational r) {
 		num_ *= r.num_;
         den_ *= r.den_;
-        reduce();
 	}
 
 	void operator/=(const Rational r) {
 		num_ *= r.den_;
 		den_ *= r.num_;
-        reduce();
 	}
 
 };
@@ -113,8 +108,10 @@ Rational evaluate_eq() {
     while(true) {
         cin >> operation;
 
-        if (operation == '=')
+        if (operation == '=') {
+            result.reduce();
             return result;
+        }
 
         cin >> operand;
 
