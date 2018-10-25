@@ -12,6 +12,12 @@ class List {
 		 data_(value), prev_(nullptr), next_(nullptr)
 		 {}
 	};
+
+	void rearrange (Node *first, Node *second) {
+		first->next_ = second;
+		second->prev_ = first;
+	}
+
 	Node *head_;
 public:
 	List() : head_(new Node(0))
@@ -34,20 +40,39 @@ public:
 		Node *new_node = new Node(value);
 		Node *last = head_->prev_;
 
-		head_->prev_ = new_node;
-		new_node->next_ = head_;
-
-		last->next_ = new_node;
-		new_node->prev_ = last;
+		rearrange(new_node, head_);
+		rearrange(last, new_node);
 	}
 
 	int pop_back() {
 		int result = back();
-		Node *last = head_->prev_->prev_;
-		delete last->next_;
+		Node *new_last = head_->prev_->prev_;
+		delete head_->prev_;
 
-		head_->prev_ = last;
-		last->next_ = head_;
+		rearrange(new_last, head_);
+
+		return result;
+	}
+	int front() {
+		if (empty())
+			throw ListException();
+		return head_->next_->data_;
+	}
+
+	void push_front(int value) {
+		Node *new_node = new Node(value);
+		Node *first = head_->next_;
+
+		rearrange(new_node, first);
+		rearrange(head_, new_node);
+	}
+
+	int pop_front() {
+		int result = front();
+		Node *new_first = head_->next_->next_;
+		delete head_->next_;
+
+		rearrange(head_, new_first);
 
 		return result;
 	}
