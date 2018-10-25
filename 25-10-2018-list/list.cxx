@@ -83,7 +83,10 @@ int main() {
 	List l1;
 	l1.push_back(42);
 	l1.push_back(13);
+	l1.push_front(11);
 	cout << l1.back() << endl;
+	cout << l1.front() << endl;
+	cout << l1.pop_front() << endl;
 	cout << l1.pop_back() << endl;
 	cout << l1.pop_back() << endl;
 	return 0;
