@@ -88,7 +88,7 @@ public:
 Rational evaluate_eq();
 
 int main() {
-    while(1) {
+    while(true) {
         try {
             cout << evaluate_eq();
         }catch(quit_signal s) {

@@ -13,6 +13,12 @@ class List {
 		 {}
 	};
 
+    void clear() {
+        while (!empty()) {
+            pop_back();
+        }
+    }
+
 	void rearrange (Node *first, Node *second) {
 		first->next_ = second;
 		second->prev_ = first;
@@ -26,11 +32,16 @@ public:
 		head_->prev_ = head_;
 	}
 
+    ~List() {
+        clear();
+        delete head_;
+    }
+
 	bool empty() const {
 		return head_->next_ == head_;
 	}
 
-	int back() {
+	int back() const {
 		if (empty())
 			throw ListException();
 		return head_->prev_->data_;
@@ -53,7 +64,7 @@ public:
 
 		return result;
 	}
-	int front() {
+	int front() const {
 		if (empty())
 			throw ListException();
 		return head_->next_->data_;
