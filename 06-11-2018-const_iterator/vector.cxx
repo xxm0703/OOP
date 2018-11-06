@@ -43,6 +43,7 @@ public:
 	Vector &operator=(const Vector& other) {
 		if(&other != this) {
 			clear();
+			// iterate
 		}
 		return *this;
 	}
@@ -70,6 +71,36 @@ public:
 	int capacity() const {
 		return capacity_;
 	}
+
+	class iterator {
+		friend Vector;
+
+	public:
+		iterator()
+		{}
+
+		int &operator*() {
+		}
+
+		iterator &operator++() {
+		}
+
+		iterator operator++(int) {
+		}
+
+		iterator &operator--() {
+		}
+
+		iterator operator--(int) {
+		}
+
+		bool operator==(const iterator &other) {
+		}
+
+		bool operator!=(const iterator &other) {
+		}
+
+	};
 
 	int &back() {
 		return buffer_[size_];
