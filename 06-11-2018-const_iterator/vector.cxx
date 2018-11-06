@@ -6,7 +6,7 @@ using namespace std;
 
 class StackError{};
 
-class Stack {
+class Vector {
 	int top_, capacity_;
     int *data_;
 
@@ -18,12 +18,12 @@ class Stack {
 		data_ = new_data;
 	}
 public:
-	Stack() : top_(0),
+	Vector() : top_(0),
 	capacity_(STACK_STEP),
 	data_(new int[STACK_STEP])
 	{}
 
-	Stack(const Stack& st) :
+	Vector(const Vector& st) :
 	top_(st.top_),
 	capacity_(st.capacity_),
 	data_(new int[st.capacity_])
@@ -32,7 +32,7 @@ public:
 		copy(st.data_, st.data_+st.top_, data_);
 	}
 
-	~Stack() {
+	~Vector() {
 		cout << "Destruct..." << endl;
 		delete []data_;
 	}
@@ -67,7 +67,7 @@ public:
 };
 
 int main() {
-    Stack st;
+    Vector st;
 	cout << st.empty() << endl;
 	cout << st.size() << endl;
 	st.push(17);
@@ -79,7 +79,7 @@ int main() {
 	cout << st.size() << endl;
 	st.push(33);
 	cout << st.pop() << endl;
-	Stack st1 = st;
+	Vector st1 = st;
 	cout << st1.pop() << endl;
 	return 0;
 }
