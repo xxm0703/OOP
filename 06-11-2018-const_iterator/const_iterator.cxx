@@ -41,9 +41,11 @@ public:
 	}
 
 	List &operator=(const List& other) {
-		clear();
-		for(const_iterator it = other.begin(); it != other.end(); it++) {
-			push_back(*it);
+		if(&other != this) {
+			clear();
+			for(const_iterator it = other.begin(); it != other.end(); it++) {
+				push_back(*it);
+			}
 		}
 		return *this;
 	}
