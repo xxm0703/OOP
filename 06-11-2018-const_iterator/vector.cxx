@@ -7,61 +7,99 @@ using namespace std;
 class StackError{};
 
 class Vector {
-	int top_, capacity_;
-    int *data_;
+	int size_, capacity_;
+    int *buffer_;
 
 	void resize() {
 		capacity_ += STACK_STEP;
 		int *new_data = new int[capacity_];
-		copy(data_, data_+top_, new_data);
-		delete []data_;
-		data_ = new_data;
+		copy(buffer_, buffer_+size_, new_data);
+		delete []buffer_;
+		buffer_ = new_data;
 	}
+
+	bool full() const {
+        return size_ == STACK_STEP;
+    }
+
 public:
-	Vector() : top_(0),
+	Vector() : size_(0),
 	capacity_(STACK_STEP),
-	data_(new int[STACK_STEP])
+	buffer_(new int[STACK_STEP])
 	{}
 
 	Vector(const Vector& st) :
-	top_(st.top_),
+	size_(st.size_),
 	capacity_(st.capacity_),
-	data_(new int[st.capacity_])
+	buffer_(new int[st.capacity_])
 	{
-		cout << "Copy..." << endl;
-		copy(st.data_, st.data_+st.top_, data_);
+		copy(st.buffer_, st.buffer_+st.size_, buffer_);
 	}
 
 	~Vector() {
-		cout << "Destruct..." << endl;
-		delete []data_;
+		delete []buffer_;
 	}
 
-    bool empty() const {
-        return !top_;
+	Vector &operator=(const Vector& other) {
+		if(&other != this) {
+			clear();
+		}
+		return *this;
+	}
+
+	int size() const {
+        return size_;
     }
 
-    bool full() const {
-        return top_ == STACK_STEP;
-    }
+	bool empty() const {
+		return !size_;
+	}
 
-	bool size() const {
-        return top_;
-    }
+	int& operator[](int index) {
+		return buffer_[index];
+	}
 
-    int pop() {
+	const int& operator[](int index) const {
+		return buffer_[index];
+	}
+
+	void clear() {
+		size_ = 0;
+	}
+
+	int capacity() const {
+		return capacity_;
+	}
+
+	int &back() {
+		return buffer_[size_];
+	}
+
+	const int &back() const {
+		return buffer_[size_];
+	}
+
+	int &front() {
+		return buffer_[0];
+	}
+
+	const int &front() const {
+		return buffer_[0];
+	}
+
+	Vector &pop_back() {
         if(empty()) {
             throw StackError();
         }
-        return data_[--top_];
+		size_--;
+        return *this;
     }
 
-    void push(int value) {
+    void push_back(int value) {
         if(full()){
-			cout << "Resize..." << endl;
 			resize();
         }
-        data_[top_++] = value;
+        buffer_[size_++] = value;
     }
 
 };
@@ -70,16 +108,16 @@ int main() {
     Vector st;
 	cout << st.empty() << endl;
 	cout << st.size() << endl;
-	st.push(17);
+	st.push_back(17);
 	cout << st.empty() << endl;
 	cout << st.size() << endl;
-	st.push(28);
-	cout << st.pop() << endl;
-	st.push(69);
+	st.push_back(28);
+	cout << st.back() << endl;
+	st.push_back(69);
 	cout << st.size() << endl;
-	st.push(33);
-	cout << st.pop() << endl;
+	st.push_back(33);
+	cout << st.back() << endl;
 	Vector st1 = st;
-	cout << st1.pop() << endl;
+	cout << st1.back() << endl;
 	return 0;
 }
