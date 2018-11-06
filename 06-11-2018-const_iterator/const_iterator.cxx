@@ -32,7 +32,23 @@ public:
 		head_->prev_ = head_;
 	}
 
-    ~List() {
+	List(const List& other) {
+		head_->next_ = head_;
+		head_->prev_ = head_;
+		for(const_iterator it = other.begin(); it != other.end(); it++) {
+			push_back(*it);
+		}
+	}
+
+	List &operator=(const List& other) {
+		clear();
+		for(const_iterator it = other.begin(); it != other.end(); it++) {
+			push_back(*it);
+		}
+		return *this;
+	}
+
+	~List() {
         clear();
         delete head_;
     }
@@ -41,7 +57,13 @@ public:
 		return head_->next_ == head_;
 	}
 
-	int back() const {
+	const int &back() const {
+		if (empty())
+			throw ListException();
+		return head_->prev_->data_;
+	}
+
+	int &back() {
 		if (empty())
 			throw ListException();
 		return head_->prev_->data_;
@@ -64,7 +86,13 @@ public:
 
 		return result;
 	}
-	int front() const {
+	const int &front() const {
+		if (empty())
+			throw ListException();
+		return head_->next_->data_;
+	}
+
+	int &front() {
 		if (empty())
 			throw ListException();
 		return head_->next_->data_;
@@ -186,12 +214,69 @@ public:
 
 	};
 
+	class const_iterator {
+		friend List;
+		Node *current_;
+
+		const_iterator(Node *node)
+		: current_(node)
+		{}
+
+	public:
+		const_iterator()
+		: current_(nullptr)
+		{}
+
+		int operator*() const {
+			return current_->data_;
+		}
+
+		const_iterator &operator++() {
+			current_ = current_->next_;
+			return *this;
+		}
+
+		const_iterator operator++(int) {
+			const_iterator tmp(current_);
+			current_ = current_->next_;
+			return tmp;
+		}
+
+		const_iterator &operator--() {
+			current_ = current_->prev_;
+			return *this;
+		}
+
+		const_iterator operator--(int) {
+			const_iterator tmp(current_);
+			current_ = current_->prev_;
+			return tmp;
+		}
+
+		bool operator==(const const_iterator &other) {
+			return current_ == other.current_;
+		}
+
+		bool operator!=(const const_iterator &other) {
+			return !operator==(other);
+		}
+
+	};
+
 	iterator begin() {
 		return iterator(head_->next_);
 	}
 
 	iterator end() {
 		return iterator(head_);
+	}
+
+	const_iterator begin() const {
+		return const_iterator(head_->next_);
+	}
+
+	const_iterator end() const {
+		return const_iterator(head_);
 	}
 
 	reverse_iterator rbegin() {
@@ -210,6 +295,10 @@ int main() {
 	l1.push_front(81);
 	l1.push_back(13);
 	l1.push_front(11);
+/*
+	const List& cl = l1;  Error!!!
+	cl.push_back(1234);
+*/
 	cout << l1.back() << endl;
 	cout << l1.front() << endl;
 	cout << l1.pop_front() << endl;
