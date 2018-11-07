@@ -74,30 +74,48 @@ public:
 
 	class iterator {
 		friend Vector;
+		int index_;
+		Vector &v_;
 
-	public:
-		iterator()
+		iterator(iterator &it) :
+			index_(it.index_),
+			v_(it.v_)
 		{}
 
+	public:
+
 		int &operator*() {
+			return v_[index_];
 		}
 
 		iterator &operator++() {
+			index_++;
+			return *this;
 		}
 
 		iterator operator++(int) {
+			iterator tmp(*this);
+			index_++;
+			return tmp;
 		}
 
 		iterator &operator--() {
+			index_++;
+			return *this;
 		}
 
 		iterator operator--(int) {
+			iterator tmp(*this);
+			index_--;
+			return tmp;
 		}
 
 		bool operator==(const iterator &other) {
+			return index_ == other.index_;
 		}
 
 		bool operator!=(const iterator &other) {
+			return !operator==(other);
 		}
 
 	};
