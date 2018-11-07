@@ -56,7 +56,7 @@ public:
 		return !size_;
 	}
 
-	int& operator[](int index) {
+	int& operator[](const int index) {
 		return buffer_[index];
 	}
 
@@ -72,60 +72,92 @@ public:
 		return capacity_;
 	}
 
-	class iterator {
+	class base_iterator {
 		friend Vector;
+	protected:
 		int index_;
 		Vector &v_;
 
-		iterator(iterator &it) :
+		base_iterator(const base_iterator &it) :
 			index_(it.index_),
 			v_(it.v_)
 		{}
 
+		base_iterator(const int index, Vector &v) :
+			index_(index),
+			v_(v)
+		{}
 	public:
 
-		int &operator*() {
-			return v_[index_];
-		}
-
-		iterator &operator++() {
+		base_iterator &operator++() {
 			index_++;
 			return *this;
 		}
 
-		iterator operator++(int) {
-			iterator tmp(*this);
+		base_iterator operator++(int) {
+			base_iterator tmp(*this);
 			index_++;
 			return tmp;
 		}
 
-		iterator &operator--() {
+		base_iterator &operator--() {
 			index_++;
 			return *this;
 		}
 
-		iterator operator--(int) {
-			iterator tmp(*this);
+		base_iterator operator--(int) {
+			base_iterator tmp(*this);
 			index_--;
 			return tmp;
 		}
 
-		bool operator==(const iterator &other) {
+		bool operator==(const base_iterator &other) const {
 			return index_ == other.index_;
 		}
 
-		bool operator!=(const iterator &other) {
+		bool operator!=(const base_iterator &other) const {
 			return !operator==(other);
 		}
 
 	};
 
+	class iterator : public base_iterator {
+		friend Vector;
+		iterator(const int &index, Vector &v) :
+			base_iterator(index, v)
+			{}
+
+		iterator(const iterator &it) :
+			base_iterator(it)
+		{}
+
+	public:
+		int &operator*() const {
+			return v_[index_];
+		}
+	};
+
+	class const_iterator : public base_iterator {
+		friend Vector;
+		int operator*() const {
+			return v_[index_];
+		}
+	};
+
+	iterator begin() {
+		return iterator(0, *this);
+	}
+
+	iterator end() {
+		return iterator(size_, *this);
+	}
+
 	int &back() {
-		return buffer_[size_];
+		return buffer_[size_ - 1];
 	}
 
 	const int &back() const {
-		return buffer_[size_];
+		return buffer_[size_ - 1];
 	}
 
 	int &front() {
@@ -144,7 +176,7 @@ public:
         return *this;
     }
 
-    void push_back(int value) {
+    void push_back(const int value) {
         if(full()){
 			resize();
         }
