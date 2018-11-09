@@ -77,6 +77,14 @@ public:
     protected:
         int *element_;
 
+        base_iterator(int *element) :
+            element_(element)
+        {}
+
+        base_iterator(const base_iterator &it) :
+            element_(it.element_)
+        {}
+
 	public:
 
 		base_iterator &operator++() {
@@ -115,7 +123,7 @@ public:
         friend Vector;
 
         iterator(int *element) :
-            element_(element)
+            base_iterator(element)
         {}
 public:
         int &operator*() {
