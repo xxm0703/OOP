@@ -72,53 +72,64 @@ public:
 		return capacity_;
 	}
 
-	class iterator {
-		friend Vector;
-		int index_;
-		Vector &v_;
-
-		iterator(iterator &it) :
-			index_(it.index_),
-			v_(it.v_)
-		{}
+	class base_iterator {
+        friend Vector;
+    protected:
+        int *element_;
 
 	public:
 
-		int &operator*() {
-			return v_[index_];
-		}
-
-		iterator &operator++() {
-			index_++;
+		base_iterator &operator++() {
+			element_++;
 			return *this;
 		}
 
-		iterator operator++(int) {
-			iterator tmp(*this);
-			index_++;
+		base_iterator operator++(int) {
+			base_iterator tmp(*this);
+			element_++;
 			return tmp;
 		}
 
-		iterator &operator--() {
-			index_++;
+		base_iterator &operator--() {
+			element_--;
 			return *this;
 		}
 
-		iterator operator--(int) {
-			iterator tmp(*this);
-			index_--;
+		base_iterator operator--(int) {
+			base_iterator tmp(*this);
+			element_--;
 			return tmp;
 		}
 
-		bool operator==(const iterator &other) {
-			return index_ == other.index_;
+		bool operator==(const base_iterator &other) {
+			return element_ == other.element_;
 		}
 
-		bool operator!=(const iterator &other) {
+		bool operator!=(const base_iterator &other) {
 			return !operator==(other);
 		}
 
 	};
+
+    class iterator : public base_iterator {
+        friend Vector;
+
+        iterator(int *element) :
+            element_(element)
+        {}
+public:
+        int &operator*() {
+            return *element_;
+        }
+    };
+
+    iterator begin() {
+        return iterator(buffer_);
+    }
+
+    iterator end() {
+        return iterator(buffer_+size_);
+    }
 
 	int &back() {
 		return buffer_[size_];
