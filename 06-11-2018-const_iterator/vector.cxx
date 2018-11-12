@@ -124,7 +124,31 @@ public:
         iterator(int *element) :
             base_iterator(element)
         {}
-public:
+    public:
+        base_iterator operator++() {
+            return base_iterator::operator--();
+        }
+
+        base_iterator operator++(int) {
+            return base_iterator::operator--(5);
+        }
+
+        base_iterator operator--() {
+            return base_iterator::operator++();
+        }
+        
+        base_iterator operator--(int) {
+            return base_iterator::operator--(5);
+        }
+    };
+
+    class reverse_iterator : public iterator {
+        friend Vector;
+
+        reverse_iterator(int *element) :
+            iterator(element)
+        {}
+    public:
         int &operator*() {
             return *element_;
         }
