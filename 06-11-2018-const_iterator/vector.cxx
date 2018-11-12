@@ -86,7 +86,6 @@ public:
         {}
 
 	public:
-
 		base_iterator &operator++() {
 			element_++;
 			return *this;
@@ -130,6 +129,18 @@ public:
             return *element_;
         }
     };
+
+	class const_iterator : public base_iterator {
+		friend Vector;
+
+		const_iterator(int *element) :
+			base_iterator(element)
+		{}
+	public:
+		int operator*() {
+			return *element_;
+		}
+	};
 
     iterator begin() {
         return iterator(buffer_);
