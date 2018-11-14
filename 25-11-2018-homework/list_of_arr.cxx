@@ -55,9 +55,16 @@ class ListOfArrays {
 
         bool operator!=(const Iterator& other);
 
-        Iterator& operator++();
+        Iterator& operator++() {
+            current_ = current_->next_;
+            return *this;
+        }
 
-        Iterator operator++(int);
+        Iterator operator++(int) {
+            auto tmp = Iterator(list_, current_);
+            ++(*this);
+            return tmp;
+        }
 
         int& operator[](const int& index);
 
@@ -114,14 +121,20 @@ class ListOfArrays {
 
     void sums(int sums[]);
 
-    Iterator begin();
+    Iterator begin() {
+        return Iterator(*this, head_->next_);
+    }
 
-    Iterator end();
+    Iterator end() {
+        return Iterator(*this, head_);
+    }
 
     ListOfArrays& ordered(bool ascending = true);
 
     ListOfArrays& operator*=(const int& coef) {
+        for (auto &arr : *this) {
 
+        }
     }
 
     ListOfArrays& operator+=(const int& value);
