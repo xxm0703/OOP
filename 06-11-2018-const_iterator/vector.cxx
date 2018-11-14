@@ -22,6 +22,52 @@ class Vector {
         return size_ == STACK_STEP;
     }
 
+	class base_iterator {
+		friend Vector;
+	protected:
+		int *element_;
+
+		base_iterator(int *element) :
+			element_(element)
+		{}
+
+		base_iterator(const base_iterator &it) :
+			element_(it.element_)
+		{}
+
+	public:
+		base_iterator &operator++() {
+			element_++;
+			return *this;
+		}
+
+		base_iterator operator++(int) {
+			base_iterator tmp(*this);
+			element_++;
+			return tmp;
+		}
+
+		base_iterator &operator--() {
+			element_--;
+			return *this;
+		}
+
+		base_iterator operator--(int) {
+			base_iterator tmp(*this);
+			element_--;
+			return tmp;
+		}
+
+		bool operator==(const base_iterator &other) {
+			return element_ == other.element_;
+		}
+
+		bool operator!=(const base_iterator &other) {
+			return !operator==(other);
+		}
+
+	};
+
 public:
 	Vector() : size_(0),
 	capacity_(STACK_STEP),
@@ -72,201 +118,112 @@ public:
 		return capacity_;
 	}
 
-	class const_reverse_iterator {
+    class iterator : public base_iterator {
+        friend Vector;
+
+        iterator(int *element) :
+            base_iterator(element)
+        {}
+    public:
+        int &operator*() {
+            return *element_;
+        }
+    };
+
+    class reverse_iterator : public iterator {
+        friend Vector;
+
+        reverse_iterator(int *element) :
+            iterator(element)
+        {}
+    public:
+        base_iterator operator++() {
+            return base_iterator::operator--();
+        }
+
+        base_iterator operator++(int) {
+            return base_iterator::operator--(5);
+        }
+
+        base_iterator operator--() {
+            return base_iterator::operator++();
+        }
+
+        base_iterator operator--(int) {
+            return base_iterator::operator--(5);
+        }
+    };
+
+	class const_iterator : public base_iterator {
 		friend Vector;
-		int *index_;
 
-		const_reverse_iterator(const const_reverse_iterator &it) :
-			index_(it.index_)
-		{}
-
-		const_reverse_iterator(int *index) :
-			index_(index)
+		const_iterator(int *element) :
+			base_iterator(element)
 		{}
 	public:
-
 		int operator*() {
-			return *index_;
+			return *element_;
 		}
-
-		const_reverse_iterator &operator--() {
-			index_++;
-			return *this;
-		}
-
-		const_reverse_iterator operator--(int) {
-			const_reverse_iterator tmp(*this);
-			index_++;
-			return tmp;
-		}
-
-		const_reverse_iterator &operator++() {
-			index_--;
-			return *this;
-		}
-
-		const_reverse_iterator operator++(int) {
-			const_reverse_iterator tmp(*this);
-			index_--;
-			return tmp;
-		}
-
-		bool operator==(const const_reverse_iterator &other) const {
-			return index_ == other.index_;
-		}
-
-		bool operator!=(const const_reverse_iterator &other) const {
-			return !operator==(other);
-		}
-
 	};
 
-	class reverse_iterator {
+	class const_reverse_iterator : public const_iterator {
 		friend Vector;
-		int *index_;
 
-		reverse_iterator(const reverse_iterator &it) :
-			index_(it.index_)
-		{}
-
-		reverse_iterator(int *index) :
-			index_(index)
+		const_reverse_iterator(int *element) :
+			const_iterator(element)
 		{}
 	public:
-
-		int &operator*() {
-			return *index_;
+		base_iterator operator++() {
+			return base_iterator::operator--();
 		}
 
-		reverse_iterator &operator++() {
-			index_++;
-			return *this;
+base_iterator
+		base_iterator operator++(int) {
+			return base_iterator::operator--(5);
+
 		}
 
-		reverse_iterator operator++(int) {
-			reverse_iterator tmp(*this);
-			index_++;
-			return tmp;
+		base_iterator operator--() {
+			return base_iterator::operator++();
 		}
 
-		reverse_iterator &operator--() {
-			index_--;
-			return *this;
+		base_iterator operator--(int) {
+			return base_iterator::operator--(5);
 		}
-
-		reverse_iterator operator--(int) {
-			reverse_iterator tmp(*this);
-			index_--;
-			return tmp;
-		}
-
-		bool operator==(const reverse_iterator &other) const {
-			return index_ == other.index_;
-		}
-
-		bool operator!=(const reverse_iterator &other) const {
-			return !operator==(other);
-		}
-
 	};
 
-	class const_iterator {
-		friend Vector;
-		int *index_;
+    iterator begin() {
+        return iterator(buffer_);
+    }
 
-		const_iterator(const const_iterator &it) :
-			index_(it.index_)
-		{}
 
-		const_iterator(int *index) :
-			index_(index)
-		{}
-	public:
+    iterator end() {
+        return iterator(buffer_+size_);
+    }
 
-		int operator*() {
-			return *index_;
-		}
+	reverse_iterator rbegin() {
+		return reverse_iterator(buffer_ + size_ - 1);
+	}
 
-		const_iterator &operator--() {
-			index_++;
-			return *this;
-		}
+	reverse_iterator rend() {
+		return reverse_iterator(buffer_ - 1);
+	}
 
-		const_iterator operator--(int) {
-			const_iterator tmp(*this);
-			index_++;
-			return tmp;
-		}
+	const_iterator begin() const {
+		return const_iterator(buffer_);
+	}
 
-		const_iterator &operator++() {
-			index_--;
-			return *this;
-		}
+	const_iterator end() const {
+		return const_iterator(buffer_+size_);
+	}
 
-		const_iterator operator++(int) {
-			const_iterator tmp(*this);
-			index_--;
-			return tmp;
-		}
+	const_reverse_iterator rbegin() const {
+		return const_reverse_iterator(buffer_ + size_ - 1);
+	}
 
-		bool operator==(const const_iterator &other) const {
-			return index_ == other.index_;
-		}
-
-		bool operator!=(const const_iterator &other) const {
-			return !operator==(other);
-		}
-
-	};
-
-	class iterator {
-		friend Vector;
-		int *index_;
-
-		iterator(const iterator &it) :
-			index_(it.index_)
-		{}
-
-		iterator(int *index) :
-			index_(index)
-		{}
-	public:
-
-		int &operator*() {
-			return *index_;
-		}
-
-		iterator &operator++() {
-			index_++;
-			return *this;
-		}
-
-		iterator operator++(int) {
-			iterator tmp(*this);
-			index_++;
-			return tmp;
-		}
-
-		iterator &operator--() {
-			index_--;
-			return *this;
-		}
-
-		iterator operator--(int) {
-			iterator tmp(*this);
-			index_--;
-			return tmp;
-		}
-
-		bool operator==(const iterator &other) const {
-			return index_ == other.index_;
-		}
-
-		bool operator!=(const iterator &other) const {
-			return !operator==(other);
-		}
-
-	};
+	const_reverse_iterator rend() const {
+		return const_reverse_iterator(buffer_ - 1);
+	}
 
 	const_iterator rbegin() const {
 		return const_iterator(buffer_ + size_ - 1);
@@ -353,7 +310,15 @@ int main() {
 	cout << st.size() << endl;
 	st.push_back(33);
 	cout << st.back() << endl;
-	Vector st1 = st;
+	const Vector st1 = st;
 	cout << st1.back() << endl;
+	cout << "Start loop..." << endl;
+	for (Vector::reverse_iterator it = st.rbegin(); it != st.rend(); it++) {
+		cout << *it << endl;
+	}
+	// cout << "Start second loop..." << endl;
+	// for (Vector::reverse_iterator it = st.rbegin(); it != st.rend(); it++) {
+	// 	cout << *it << endl;
+	// }
 	return 0;
 }
