@@ -1,4 +1,5 @@
 #include<algorithm>
+#include<numeric>
 
 using namespace std;
 
@@ -20,6 +21,18 @@ class ListOfArrays {
             for (int i = 0; i < size_; ++i) {
                 data_[i] *= coef;
             }
+        }
+
+        int sum() {
+            int sum = 0;
+            for (int i = 0; i < size_; ++i) {
+                sum += data_[i];
+            }
+            return sum;
+        }
+
+        double average() {
+            return sum()/size_;
         }
     };
 
@@ -86,7 +99,9 @@ class ListOfArrays {
 
         double median();
 
-        int sum();
+        int sum() {
+            return current_->sum();
+        }
 
         Iterator& ordered(bool ascending = true);
     };
@@ -129,7 +144,12 @@ class ListOfArrays {
 
     void sizes(int sizes[]);
 
-    void sums(int sums[]);
+    void sums(int sums[]) {
+        int index = 0;
+        for (auto it = begin(); it != end(); ++it) {
+            sums[index++] = it.sum();
+        }
+    }
 
     Iterator begin() {
         return Iterator(*this, head_->next_);
@@ -149,7 +169,11 @@ class ListOfArrays {
 
     ListOfArrays& operator+=(const int& value);
 
-    void show();
+    void show() {
+        for (auto arr : *this) {
+            arr.print();
+        }
+    }
 };
 
 int main(int argc, char* argv[])
