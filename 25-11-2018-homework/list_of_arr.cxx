@@ -12,6 +12,11 @@ class ListOfArrays {
             delete [] data_;
         }
 
+        void operator*=(const int coef) {
+            for (int i = 0; i < size_; i++) {
+                data_[i] *= coef;
+            }
+        }
     };
 
     ArrayNode* head_;
@@ -115,9 +120,18 @@ class ListOfArrays {
 
     ListOfArrays& ordered(bool ascending = true);
 
-    ListOfArrays& operator*=(const int& coef);
+    ListOfArrays& operator*=(const int& coef) {
+
+    }
 
     ListOfArrays& operator+=(const int& value);
 
     void show();
 };
+
+int main(int argc, char* argv[])
+{
+
+
+    return 0;
+}
