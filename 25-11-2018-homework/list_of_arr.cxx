@@ -76,7 +76,9 @@ class ListOfArrays {
 
         int& operator[](const int& index);
 
-        int size();
+        int size() {
+            return list_.size();
+        }
 
         void show();
 
