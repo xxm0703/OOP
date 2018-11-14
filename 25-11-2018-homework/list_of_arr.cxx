@@ -17,6 +17,21 @@ class ListOfArrays {
     ArrayNode* head_;
     int size_;
 
+    void rearrange(ArrayNode *first, ArrayNode *second) {
+		first->next_ = second;
+		second->prev_ = first;
+	}
+
+    void pop() {
+        ArrayNode *new_last = head_->prev_->prev_;
+        delete head_->prev_;
+        rearrange(new_last, head_);
+    }
+
+    bool empty() {
+        return head_ == head_->next_;
+    }
+
     public:
 
     class Iterator {
@@ -60,9 +75,17 @@ class ListOfArrays {
         head_->prev_ = head_;
     }
 
-	~ListOfArrays();
+	~ListOfArrays() {
+        while (!empty()) {
+            pop();
+        }
+        delete head_;
+    }
 
-    ListOfArrays(const ListOfArrays& other);
+    ListOfArrays(const ListOfArrays& other)
+        : head_(new ArrayNode(0, 0)), size_(0) {
+            // iterator copy
+        }
 
 	ListOfArrays& operator=(const ListOfArrays& other);
 
@@ -70,7 +93,13 @@ class ListOfArrays {
         return size_;
     }
 
-    void push(int array[], int position, int length);
+    void push(int array[], int position, int length) {
+		auto *new_node = new ArrayNode(array, length);
+		ArrayNode *last = head_->prev_;
+
+		rearrange(new_node, head_);
+		rearrange(last, new_node);
+    }
 
     void averages(double averages[]);
 
