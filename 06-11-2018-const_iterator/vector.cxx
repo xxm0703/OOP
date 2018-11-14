@@ -102,7 +102,7 @@ public:
 		return !size_;
 	}
 
-	int& operator[](int index) {
+	int& operator[](const int index) {
 		return buffer_[index];
 	}
 
@@ -177,8 +177,10 @@ public:
 			return base_iterator::operator--();
 		}
 
+base_iterator
 		base_iterator operator++(int) {
 			return base_iterator::operator--(5);
+
 		}
 
 		base_iterator operator--() {
@@ -193,6 +195,7 @@ public:
     iterator begin() {
         return iterator(buffer_);
     }
+
 
     iterator end() {
         return iterator(buffer_+size_);
@@ -222,12 +225,44 @@ public:
 		return const_reverse_iterator(buffer_ - 1);
 	}
 
+	const_iterator rbegin() const {
+		return const_iterator(buffer_ + size_ - 1);
+	}
+
+	const_iterator rend() const {
+		return const_iterator(buffer_ - 1);
+	}
+
+	iterator rbegin() {
+		return iterator(buffer_ + size_ - 1);
+	}
+
+	iterator rend() {
+		return iterator(buffer_ - 1);
+	}
+
+	const_iterator begin() const {
+		return const_iterator(buffer_);
+	}
+
+	const_iterator end() const {
+		return const_iterator(buffer_ + size_);
+	}
+
+	iterator begin() {
+		return iterator(buffer_);
+	}
+
+	iterator end() {
+		return iterator(buffer_ + size_);
+	}
+
 	int &back() {
-		return buffer_[size_];
+		return buffer_[size_ - 1];
 	}
 
 	const int &back() const {
-		return buffer_[size_];
+		return buffer_[size_ - 1];
 	}
 
 	int &front() {
@@ -246,12 +281,19 @@ public:
         return *this;
     }
 
-    void push_back(int value) {
+    void push_back(const int value) {
         if(full()){
 			resize();
         }
         buffer_[size_++] = value;
     }
+
+	iterator insert(iterator pos, const int &x) {
+		while(pos != end())
+		int tmp = *pos;
+		*pos = x;
+		pos++;
+	}
 
 };
 
