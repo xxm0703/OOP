@@ -1,3 +1,7 @@
+#include<algorithm>
+
+using namespace std;
+
 class ListOfArrays {
 
     struct ArrayNode {
@@ -13,7 +17,7 @@ class ListOfArrays {
         }
 
         void operator*=(const int coef) {
-            for (int i = 0; i < size_; i++) {
+            for (int i = 0; i < size_; ++i) {
                 data_[i] *= coef;
             }
         }
@@ -51,13 +55,24 @@ class ListOfArrays {
         Iterator(ListOfArrays& list, ArrayNode* current)
             : list_(list), current_(current) {}
 
-        bool operator==(const Iterator& other);
+        bool operator==(const Iterator& other) {
+            return current_ == other.current_;
+        }
 
-        bool operator!=(const Iterator& other);
+        bool operator!=(const Iterator& other){
+            return !operator==(other);
+        }
 
-        Iterator& operator++();
+        Iterator& operator++() {
+            current_ = current_->next_;
+            return *this;
+        }
 
-        Iterator operator++(int);
+        Iterator operator++(int) {
+            auto tmp = Iterator(list_, current_);
+            ++(*this);
+            return tmp;
+        }
 
         int& operator[](const int& index);
 
@@ -99,7 +114,7 @@ class ListOfArrays {
     }
 
     void push(int array[], int position, int length) {
-		auto *new_node = new ArrayNode(array, length);
+		auto *new_node = new ArrayNode(array + position, length);
 		ArrayNode *last = head_->prev_;
 
 		rearrange(new_node, head_);
@@ -114,14 +129,20 @@ class ListOfArrays {
 
     void sums(int sums[]);
 
-    Iterator begin();
+    Iterator begin() {
+        return Iterator(*this, head_->next_);
+    }
 
-    Iterator end();
+    Iterator end() {
+        return Iterator(*this, head_);
+    }
 
     ListOfArrays& ordered(bool ascending = true);
 
     ListOfArrays& operator*=(const int& coef) {
-
+        for (auto arr = head_->next_; arr != head_; arr = arr->next_)
+            arr->operator*=(coef);
+        return *this;
     }
 
     ListOfArrays& operator+=(const int& value);
