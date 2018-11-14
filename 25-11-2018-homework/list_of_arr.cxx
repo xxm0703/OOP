@@ -1,3 +1,7 @@
+#include<algorithm>
+
+using namespace std;
+
 class ListOfArrays {
 
     struct ArrayNode {
@@ -13,7 +17,7 @@ class ListOfArrays {
         }
 
         void operator*=(const int coef) {
-            for (int i = 0; i < size_; i++) {
+            for (int i = 0; i < size_; ++i) {
                 data_[i] *= coef;
             }
         }
@@ -132,9 +136,9 @@ class ListOfArrays {
     ListOfArrays& ordered(bool ascending = true);
 
     ListOfArrays& operator*=(const int& coef) {
-        for (auto &arr : *this) {
-
-        }
+        for (auto arr = head_->next_; arr != head_; arr = arr->next_)
+            arr->operator*=(coef);
+        return *this;
     }
 
     ListOfArrays& operator+=(const int& value);
