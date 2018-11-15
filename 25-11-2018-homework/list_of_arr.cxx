@@ -1,3 +1,4 @@
+#include<iostream>
 #include<algorithm>
 #include<numeric>
 
@@ -34,6 +35,16 @@ class ListOfArrays {
         double average() {
             return sum()/size_;
         }
+
+		void show() {
+			for(int i = 0; i < size_; ++i) {
+				cout << data_[i] << (i == size_ - 1 ? ';' : ' ');
+			}
+		}
+
+		int size() {
+			return size_;
+		}
     };
 
     ArrayNode* head_;
@@ -146,7 +157,12 @@ class ListOfArrays {
 
     void medians(double medians[]);
 
-    void sizes(int sizes[]);
+    void sizes(int sizes[]) {
+		int i = 0;
+		for (auto arr : *this) {
+			sizes[i++] = arr.size();
+		}
+	}
 
     void sums(int sums[]) {
         int index = 0;
@@ -175,7 +191,8 @@ class ListOfArrays {
 
     void show() {
         for (auto arr : *this) {
-            arr.print();
+            arr.show();
+			cout << ' ';
         }
     }
 };
