@@ -177,7 +177,7 @@ public:
 			return base_iterator::operator--();
 		}
 
-base_iterator
+
 		base_iterator operator++(int) {
 			return base_iterator::operator--(5);
 
@@ -192,31 +192,6 @@ base_iterator
 		}
 	};
 
-    iterator begin() {
-        return iterator(buffer_);
-    }
-
-
-    iterator end() {
-        return iterator(buffer_+size_);
-    }
-
-	reverse_iterator rbegin() {
-		return reverse_iterator(buffer_ + size_ - 1);
-	}
-
-	reverse_iterator rend() {
-		return reverse_iterator(buffer_ - 1);
-	}
-
-	const_iterator begin() const {
-		return const_iterator(buffer_);
-	}
-
-	const_iterator end() const {
-		return const_iterator(buffer_+size_);
-	}
-
 	const_reverse_iterator rbegin() const {
 		return const_reverse_iterator(buffer_ + size_ - 1);
 	}
@@ -225,20 +200,12 @@ base_iterator
 		return const_reverse_iterator(buffer_ - 1);
 	}
 
-	const_iterator rbegin() const {
-		return const_iterator(buffer_ + size_ - 1);
+	reverse_iterator rbegin() {
+		return reverse_iterator(buffer_ + size_ - 1);
 	}
 
-	const_iterator rend() const {
-		return const_iterator(buffer_ - 1);
-	}
-
-	iterator rbegin() {
-		return iterator(buffer_ + size_ - 1);
-	}
-
-	iterator rend() {
-		return iterator(buffer_ - 1);
+	reverse_iterator rend() {
+		return reverse_iterator(buffer_ - 1);
 	}
 
 	const_iterator begin() const {
@@ -288,12 +255,12 @@ base_iterator
         buffer_[size_++] = value;
     }
 
-	iterator insert(iterator pos, const int &x) {
-		while(pos != end())
-		int tmp = *pos;
-		*pos = x;
-		pos++;
-	}
+	// iterator insert(iterator pos, const int &x) {
+	// 	while(pos != end())
+	// 	const int tmp = *pos;
+	// 	*pos = x;
+	// 	pos++;
+	// }
 
 };
 
@@ -313,12 +280,12 @@ int main() {
 	const Vector st1 = st;
 	cout << st1.back() << endl;
 	cout << "Start loop..." << endl;
+	for (Vector::iterator it = st.begin(); it != st.end(); it++) {
+		cout << *it << endl;
+	}
+	cout << "Start second loop..." << endl;
 	for (Vector::reverse_iterator it = st.rbegin(); it != st.rend(); it++) {
 		cout << *it << endl;
 	}
-	// cout << "Start second loop..." << endl;
-	// for (Vector::reverse_iterator it = st.rbegin(); it != st.rend(); it++) {
-	// 	cout << *it << endl;
-	// }
 	return 0;
 }
