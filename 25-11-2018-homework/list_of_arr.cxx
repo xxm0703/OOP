@@ -63,6 +63,10 @@ class ListOfArrays {
         ListOfArrays& list_;
         ArrayNode* current_;
 
+		ArrayNode &operator*() {
+			return *current_;
+		}
+
         public:
 
         Iterator(ListOfArrays& list, ArrayNode* current)
