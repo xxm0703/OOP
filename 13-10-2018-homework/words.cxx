@@ -34,11 +34,15 @@ public:
 		parantheses_ = 0;
     }
 
+	enum flags_t {
+		STRICT = 0x100,
+	};
+
     string set_flags() {  // Returns the first word after flags
         string tmp;
         cin >> tmp;
         if (!tmp.compare("strict")) {
-            flags_ |= 0x100;
+            flags_ |= STRICT;
             return set_flags();
         }
         else if (tmp.find("sentences-up-to:") != string::npos) {

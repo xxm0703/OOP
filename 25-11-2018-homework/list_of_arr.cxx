@@ -36,12 +36,6 @@ class ListOfArrays {
             return sum()/size_;
         }
 
-		void show() {
-			for(int i = 0; i < size_; ++i) {
-				cout << data_[i] << (i == size_ - 1 ? ';' : ' ');
-			}
-		}
-
 		int size() {
 			return size_;
 		}
@@ -49,6 +43,14 @@ class ListOfArrays {
 
     ArrayNode* head_;
     int size_;
+
+	friend ostream& operator << (ostream& os, const ListOfArrays::ArrayNode& an)
+	{
+		for(int i = 0; i < an.size_; ++i) {
+			os << an.data_[i] << (i == an.size_ - 1 ? ';' : ' ');
+		}
+		return os;
+	}
 
     void rearrange(ArrayNode *first, ArrayNode *second) {
 		first->next_ = second;
@@ -59,8 +61,8 @@ class ListOfArrays {
         ArrayNode *new_last = head_->prev_->prev_;
         delete head_->prev_;
         rearrange(new_last, head_);
-    }
 
+	}
     bool empty() {
         return head_ == head_->next_;
     }
@@ -191,11 +193,13 @@ class ListOfArrays {
 
     void show() {
         for (auto arr : *this) {
-            arr.show();
-			cout << ' ';
+            cout << arr << ' ';
         }
     }
 };
+
+
+
 
 int main(int argc, char* argv[])
 {
