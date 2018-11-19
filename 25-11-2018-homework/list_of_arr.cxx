@@ -14,11 +14,11 @@ class ListOfArrays {
         ArrayNode(int *data, int size)
             : data_(data), size_(size), next_(0), prev_(0) {}
 
-        ArrayNode(const ArrayNode& other)
-            : size_(other.size_), next_(0), prev_(0) {
-                data_ = new int[size_];
-                copy(other.data_, other.data_ + size_, data_);
-            }
+        // ArrayNode(const ArrayNode& other)
+        //     : size_(other.size_), next_(0), prev_(0) {
+        //         data_ = new int[size_];
+        //         copy(other.data_, other.data_ + size_, data_);
+        //     }
 
         ~ArrayNode()
         {
@@ -103,7 +103,6 @@ class ListOfArrays {
         ArrayNode *new_last = head_->prev_->prev_;
         delete head_->prev_;
         rearrange(new_last, head_);
-
 	}
 
     void clear ()
@@ -192,7 +191,13 @@ class ListOfArrays {
             return current_->sum();
         }
 
-        Iterator& ordered(bool ascending = true);
+        Iterator& ordered(bool ascending = true)
+        {
+            sort(current_->data_, current_->data_ + current_->size_);
+
+            if (!ascending)
+                reverse(current_->data_, current_->data_ + current_->size_);
+        }
     };
 
     ListOfArrays()
@@ -250,6 +255,7 @@ class ListOfArrays {
 
 		rearrange(new_node, head_);
 		rearrange(last, new_node);
+        size_++;
     }
 
     void averages(double averages[]) const
@@ -304,7 +310,7 @@ class ListOfArrays {
 
     ListOfArrays& ordered(bool ascending = true)
     {
-        //TODO
+        return *this;
     }
 
     ListOfArrays& operator*=(const int& coef)
