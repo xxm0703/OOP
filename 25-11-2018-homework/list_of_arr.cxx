@@ -65,10 +65,11 @@ class ListOfArrays {
             return data_[index];
         }
 
-        friend ostream& operator << (ostream& os, const ListOfArrays::ArrayNode& an)
+        friend ostream& operator << (ostream& os, const ListOfArrays::ArrayNode& arr)
         {
-            for(int i = 0; i < an.size_; ++i) {
-                os << an.data_[i] << (i == an.size_ - 1 ? ';' : ' ');
+            for(int i = 0; i < arr.size_; ++i)
+            {
+                os << arr.data_[i] << (i < arr.size_ - 1 ? " " : "");
             }
             return os;
         }
@@ -215,6 +216,7 @@ class ListOfArrays {
 		while (arr != head_)
         {
 			averages[i++] = arr->average();
+            arr = arr->next_;
 		}
     }
 
@@ -225,6 +227,7 @@ class ListOfArrays {
 		while (arr != head_)
         {
 			medians[i++] = arr->median();
+            arr = arr->next_;
 		}
     }
 
@@ -235,6 +238,7 @@ class ListOfArrays {
 		while (arr != head_)
         {
 			sizes[i++] = arr->size();
+            arr = arr->next_;
 		}
 	}
 
@@ -245,6 +249,7 @@ class ListOfArrays {
 		while (arr != head_)
         {
 			sums[i++] = arr->sum();
+            arr = arr->next_;
 		}
     }
 
@@ -269,10 +274,13 @@ class ListOfArrays {
 
     ListOfArrays& operator+=(const int& value);
 
-    void show() {
-        for (auto arr : *this)
+    void show() const
+    {
+        ArrayNode *arr = head_->next_;
+        while (arr != head_)
         {
-            cout << arr << ' ';
+            cout << arr << (arr->next_ == head_ ? "" : "; ");
+            arr = arr->next_;
         }
     }
 };
