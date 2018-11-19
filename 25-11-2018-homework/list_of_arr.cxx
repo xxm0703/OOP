@@ -14,6 +14,12 @@ class ListOfArrays {
         ArrayNode(int *data, int size)
             : data_(data), size_(size), next_(0), prev_(0) {}
 
+        ArrayNode(const ArrayNode& other)
+            : size_(other.size_), next_(0), prev_(0) {
+                data_ = new int[size_];
+                copy(other.data_, other.data_ + size_, data_);
+            }
+
         ~ArrayNode()
         {
             delete []data_;
@@ -99,6 +105,15 @@ class ListOfArrays {
         rearrange(new_last, head_);
 
 	}
+
+    void clear ()
+    {
+        while (!empty())
+        {
+            pop();
+        }
+    }
+
     bool empty () const
     {
         return head_ == head_->next_;
@@ -188,20 +203,40 @@ class ListOfArrays {
 
 	~ListOfArrays()
     {
-        while (!empty())
-        {
-            pop();
-        }
+        clear();
         delete head_;
     }
 
     ListOfArrays(const ListOfArrays& other)
         : head_(new ArrayNode(0, 0)), size_(0)
         {
-            // iterator copy
+    		ArrayNode* node = other.head_->next_;
+    		while (node != other.head_)
+            {
+                int *data = new int[node->size_];
+                copy(node->data_, node->data_ + node->size_, data);
+                push(data, 0, node->size_);
+    			node = node->next_;
+    		}
         }
 
-	ListOfArrays& operator=(const ListOfArrays& other);
+	ListOfArrays& operator=(const ListOfArrays& other)
+    {
+		if (this != &other)
+        {
+			clear();
+            head_ = new ArrayNode(0, 0);
+			ArrayNode* node = other.head_->next_;
+			while (node != other.head_)
+            {
+                int *data = new int[node->size_];
+                copy(node->data_, node->data_ + node->size_, data);
+                push(data, 0, node->size_);
+				node = node->next_;
+			}
+		}
+		return *this;
+}
 
     int size() const
     {
@@ -220,8 +255,7 @@ class ListOfArrays {
     void averages(double averages[]) const
     {
 		int i = 0;
-        ArrayNode *arr = head_->next_;
-		while (arr != head_)
+        for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
 			averages[i++] = arr->average();
             arr = arr->next_;
@@ -231,8 +265,7 @@ class ListOfArrays {
     void medians(double medians[]) const
     {
 		int i = 0;
-        ArrayNode *arr = head_->next_;
-		while (arr != head_)
+        for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
 			medians[i++] = arr->median();
             arr = arr->next_;
@@ -242,8 +275,7 @@ class ListOfArrays {
     void sizes(int sizes[]) const
     {
 		int i = 0;
-        ArrayNode *arr = head_->next_;
-		while (arr != head_)
+        for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
 			sizes[i++] = arr->size();
             arr = arr->next_;
@@ -253,8 +285,7 @@ class ListOfArrays {
     void sums(int sums[]) const
     {
 		int i = 0;
-        ArrayNode *arr = head_->next_;
-		while (arr != head_)
+        for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
 			sums[i++] = arr->sum();
             arr = arr->next_;
@@ -271,7 +302,10 @@ class ListOfArrays {
         return Iterator(*this, head_);
     }
 
-    ListOfArrays& ordered(bool ascending = true);
+    ListOfArrays& ordered(bool ascending = true)
+    {
+        //TODO
+    }
 
     ListOfArrays& operator*=(const int& coef)
     {
@@ -289,8 +323,7 @@ class ListOfArrays {
 
     void show() const
     {
-        ArrayNode *arr = head_->next_;
-        while (arr != head_)
+        for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
             cout << arr << (arr->next_ == head_ ? "" : "; ");
             arr = arr->next_;
