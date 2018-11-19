@@ -1,4 +1,5 @@
 #include<iostream>
+#include<vector>
 #include<algorithm>
 #include<numeric>
 
@@ -351,12 +352,46 @@ class ListOfArrays {
     }
 };
 
-
-
+ListOfArrays handle_input(vector<int>&);
+void handle_commands(ListOfArrays&);
 
 int main(int argc, char* argv[])
 {
-
+    vector<int> input_vector;  // Must stay in the scope in order to save the data
+    handle_input(input_vector);
 
     return 0;
+}
+
+ListOfArrays handle_input(vector<int>& input)
+{
+    ListOfArrays list;
+    int read_value, array_offset = 0;
+    char delimeter;
+
+    do {
+        cin >> read_value;
+
+        input.push_back(read_value);
+
+        delimeter = cin.get();
+        if (delimeter == ';' || delimeter == '\n')
+        {
+            list.push(input.data(), array_offset, input.size() - array_offset);
+            array_offset = input.size();
+        }
+
+    } while (delimeter != '\n');
+
+    return list;
+}
+
+void handle_commands(ListOfArrays list)  // Reads one line of commands
+{
+    char delimeter = '.'
+    string line, cmd;
+    getline(cin, line);
+    do {
+        cmd = line.substr(0, line.find(delimeter));
+    } while (line.find(delimeter) != string::npos)
 }
