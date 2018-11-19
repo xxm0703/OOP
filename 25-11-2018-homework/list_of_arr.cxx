@@ -27,6 +27,14 @@ class ListOfArrays {
             }
         }
 
+        void operator+=(const int value)
+        {
+            for (int i = 0; i < size_; ++i)
+            {
+                data_[i] += value;
+            }
+        }
+
         int sum() const
         {
             int sum = 0;
@@ -272,7 +280,12 @@ class ListOfArrays {
         return *this;
     }
 
-    ListOfArrays& operator+=(const int& value);
+    ListOfArrays& operator+=(const int& value)
+    {
+        for (auto arr = head_->next_; arr != head_; arr = arr->next_)
+            arr->operator*=(value);
+        return *this;
+    }
 
     void show() const
     {
