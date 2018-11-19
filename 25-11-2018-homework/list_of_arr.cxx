@@ -52,18 +52,18 @@ class ListOfArrays {
 		return os;
 	}
 
-    void rearrange(ArrayNode *first, ArrayNode *second) {
+    void rearrange (ArrayNode *first, ArrayNode *second) {
 		first->next_ = second;
 		second->prev_ = first;
 	}
 
-    void pop() {
+    void pop () {
         ArrayNode *new_last = head_->prev_->prev_;
         delete head_->prev_;
         rearrange(new_last, head_);
 
 	}
-    bool empty() {
+    bool empty () {
         return head_ == head_->next_;
     }
 
