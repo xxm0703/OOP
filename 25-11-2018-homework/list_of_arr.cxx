@@ -27,7 +27,7 @@ class ListOfArrays {
             }
         }
 
-        int sum()
+        int sum() const
         {
             int sum = 0;
             for (int i = 0; i < size_; ++i) {
@@ -36,12 +36,12 @@ class ListOfArrays {
             return sum;
         }
 
-        double average()
+        double average() const
         {
             return sum()/size_;
         }
 
-        double median()
+        double median() const
         {
             double median_value;
             int *tmp = new int[size_];
@@ -55,10 +55,15 @@ class ListOfArrays {
             return median_value;
         }
 
-		int size()
+		int size() const
         {
 			return size_;
 		}
+
+        int& at(const int& index) const
+        {
+            return data_[index];
+        }
 
         friend ostream& operator << (ostream& os, const ListOfArrays::ArrayNode& an)
         {
@@ -72,18 +77,21 @@ class ListOfArrays {
     ArrayNode* head_;
     int size_;
 
-    void rearrange (ArrayNode *first, ArrayNode *second) {
+    void rearrange (ArrayNode *first, ArrayNode *second)
+    {
 		first->next_ = second;
 		second->prev_ = first;
 	}
 
-    void pop () {
+    void pop ()
+    {
         ArrayNode *new_last = head_->prev_->prev_;
         delete head_->prev_;
         rearrange(new_last, head_);
 
 	}
-    bool empty () {
+    bool empty () const
+    {
         return head_ == head_->next_;
     }
 
@@ -107,12 +115,12 @@ class ListOfArrays {
             : list_(list), current_(current)
             {}
 
-        bool operator==(const Iterator& other)
+        bool operator==(const Iterator& other) const
         {
             return current_ == other.current_;
         }
 
-        bool operator!=(const Iterator& other)
+        bool operator!=(const Iterator& other) const
         {
             return !operator==(other);
         }
@@ -130,29 +138,32 @@ class ListOfArrays {
             return tmp;
         }
 
-        int& operator[](const int& index);
+        int& operator[](const int& index)
+        {
+            return current_->at(index);
+        }
 
-        int size()
+        int size() const
         {
             return list_.size();
         }
 
-        void show()
+        void show() const
         {
             cout << current_;
         }
 
-        double average()
+        double average() const
         {
             return current_->average();
         }
 
-        double median()
+        double median() const
         {
             return current_->median();
         }
 
-        int sum()
+        int sum() const
         {
             return current_->sum();
         }
@@ -183,7 +194,7 @@ class ListOfArrays {
 
 	ListOfArrays& operator=(const ListOfArrays& other);
 
-    int size()
+    int size() const
     {
         return size_;
     }
@@ -197,26 +208,44 @@ class ListOfArrays {
 		rearrange(last, new_node);
     }
 
-    void averages(double averages[]);
-
-    void medians(double medians[]);
-
-    void sizes(int sizes[])
+    void averages(double averages[]) const
     {
 		int i = 0;
-		for (auto arr : *this)
+        ArrayNode *arr = head_->next_;
+		while (arr != head_)
         {
-			sizes[i++] = arr.size();
+			averages[i++] = arr->average();
+		}
+    }
+
+    void medians(double medians[]) const
+    {
+		int i = 0;
+        ArrayNode *arr = head_->next_;
+		while (arr != head_)
+        {
+			medians[i++] = arr->median();
+		}
+    }
+
+    void sizes(int sizes[]) const
+    {
+		int i = 0;
+        ArrayNode *arr = head_->next_;
+		while (arr != head_)
+        {
+			sizes[i++] = arr->size();
 		}
 	}
 
-    void sums(int sums[])
+    void sums(int sums[]) const
     {
-        int index = 0;
-        for (auto it = begin(); it != end(); ++it)
+		int i = 0;
+        ArrayNode *arr = head_->next_;
+		while (arr != head_)
         {
-            sums[index++] = it.sum();
-        }
+			sums[i++] = arr->sum();
+		}
     }
 
     Iterator begin()
