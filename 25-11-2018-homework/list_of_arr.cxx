@@ -14,17 +14,21 @@ class ListOfArrays {
         ArrayNode(int *data, int size)
             : data_(data), size_(size), next_(0), prev_(0) {}
 
-        ~ArrayNode() {
-            delete [] data_;
+        ~ArrayNode()
+        {
+            delete []data_;
         }
 
-        void operator*=(const int coef) {
-            for (int i = 0; i < size_; ++i) {
+        void operator*=(const int coef)
+        {
+            for (int i = 0; i < size_; ++i)
+            {
                 data_[i] *= coef;
             }
         }
 
-        int sum() {
+        int sum()
+        {
             int sum = 0;
             for (int i = 0; i < size_; ++i) {
                 sum += data_[i];
@@ -32,25 +36,41 @@ class ListOfArrays {
             return sum;
         }
 
-        double average() {
+        double average()
+        {
             return sum()/size_;
         }
 
-		int size() {
+        double median()
+        {
+            double median_value;
+            int *tmp = new int[size_];
+            copy(data_, data_ + size_, tmp);
+            sort(tmp, tmp + size_);
+            if (size_ % 2)
+                median_value = tmp[size_ / 2];
+            else
+                median_value = (tmp[size_ / 2] + tmp[size_ / 2 + 1]) / 2;
+            delete []tmp;
+            return median_value;
+        }
+
+		int size()
+        {
 			return size_;
 		}
+
+        friend ostream& operator << (ostream& os, const ListOfArrays::ArrayNode& an)
+        {
+            for(int i = 0; i < an.size_; ++i) {
+                os << an.data_[i] << (i == an.size_ - 1 ? ';' : ' ');
+            }
+            return os;
+        }
     };
 
     ArrayNode* head_;
     int size_;
-
-	friend ostream& operator << (ostream& os, const ListOfArrays::ArrayNode& an)
-	{
-		for(int i = 0; i < an.size_; ++i) {
-			os << an.data_[i] << (i == an.size_ - 1 ? ';' : ' ');
-		}
-		return os;
-	}
 
     void rearrange (ArrayNode *first, ArrayNode *second) {
 		first->next_ = second;
@@ -76,29 +96,35 @@ class ListOfArrays {
         ListOfArrays& list_;
         ArrayNode* current_;
 
-		ArrayNode &operator*() {
+		ArrayNode &operator*()
+        {
 			return *current_;
 		}
 
         public:
 
         Iterator(ListOfArrays& list, ArrayNode* current)
-            : list_(list), current_(current) {}
+            : list_(list), current_(current)
+            {}
 
-        bool operator==(const Iterator& other) {
+        bool operator==(const Iterator& other)
+        {
             return current_ == other.current_;
         }
 
-        bool operator!=(const Iterator& other){
+        bool operator!=(const Iterator& other)
+        {
             return !operator==(other);
         }
 
-        Iterator& operator++() {
+        Iterator& operator++()
+        {
             current_ = current_->next_;
             return *this;
         }
 
-        Iterator operator++(int) {
+        Iterator operator++(int)
+        {
             auto tmp = Iterator(list_, current_);
             ++(*this);
             return tmp;
@@ -106,17 +132,28 @@ class ListOfArrays {
 
         int& operator[](const int& index);
 
-        int size() {
+        int size()
+        {
             return list_.size();
         }
 
-        void show();
+        void show()
+        {
+            cout << current_;
+        }
 
-        double average();
+        double average()
+        {
+            return current_->average();
+        }
 
-        double median();
+        double median()
+        {
+            return current_->median();
+        }
 
-        int sum() {
+        int sum()
+        {
             return current_->sum();
         }
 
@@ -129,25 +166,30 @@ class ListOfArrays {
         head_->prev_ = head_;
     }
 
-	~ListOfArrays() {
-        while (!empty()) {
+	~ListOfArrays()
+    {
+        while (!empty())
+        {
             pop();
         }
         delete head_;
     }
 
     ListOfArrays(const ListOfArrays& other)
-        : head_(new ArrayNode(0, 0)), size_(0) {
+        : head_(new ArrayNode(0, 0)), size_(0)
+        {
             // iterator copy
         }
 
 	ListOfArrays& operator=(const ListOfArrays& other);
 
-    int size() {
+    int size()
+    {
         return size_;
     }
 
-    void push(int array[], int position, int length) {
+    void push(int array[], int position, int length)
+    {
 		auto *new_node = new ArrayNode(array + position, length);
 		ArrayNode *last = head_->prev_;
 
@@ -159,31 +201,38 @@ class ListOfArrays {
 
     void medians(double medians[]);
 
-    void sizes(int sizes[]) {
+    void sizes(int sizes[])
+    {
 		int i = 0;
-		for (auto arr : *this) {
+		for (auto arr : *this)
+        {
 			sizes[i++] = arr.size();
 		}
 	}
 
-    void sums(int sums[]) {
+    void sums(int sums[])
+    {
         int index = 0;
-        for (auto it = begin(); it != end(); ++it) {
+        for (auto it = begin(); it != end(); ++it)
+        {
             sums[index++] = it.sum();
         }
     }
 
-    Iterator begin() {
+    Iterator begin()
+    {
         return Iterator(*this, head_->next_);
     }
 
-    Iterator end() {
+    Iterator end()
+    {
         return Iterator(*this, head_);
     }
 
     ListOfArrays& ordered(bool ascending = true);
 
-    ListOfArrays& operator*=(const int& coef) {
+    ListOfArrays& operator*=(const int& coef)
+    {
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
             arr->operator*=(coef);
         return *this;
@@ -192,7 +241,8 @@ class ListOfArrays {
     ListOfArrays& operator+=(const int& value);
 
     void show() {
-        for (auto arr : *this) {
+        for (auto arr : *this)
+        {
             cout << arr << ' ';
         }
     }
