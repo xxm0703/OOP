@@ -79,6 +79,14 @@ class ListOfArrays {
             return data_[index];
         }
 
+        void order(const bool ascending)
+        {
+            sort(data_, data_ + size_);
+
+            if (!ascending)
+                reverse(data_, data_ + size_);
+        }
+
         friend ostream& operator << (ostream& os, const ListOfArrays::ArrayNode& arr)
         {
             for(int i = 0; i < arr.size_; ++i)
@@ -98,11 +106,19 @@ class ListOfArrays {
 		second->prev_ = first;
 	}
 
+    void swap(ArrayNode *first, ArrayNode *second)
+    {
+        rearrange(first->prev_, second);
+        rearrange(first, second->next_);
+        rearrange(second, first);
+    }
+
     void pop ()
     {
         ArrayNode *new_last = head_->prev_->prev_;
         delete head_->prev_;
         rearrange(new_last, head_);
+        size_--;
 	}
 
     void clear ()
@@ -168,7 +184,7 @@ class ListOfArrays {
 
         int size() const
         {
-            return list_.size();
+            return current_->size();
         }
 
         void show() const
@@ -193,10 +209,8 @@ class ListOfArrays {
 
         Iterator& ordered(bool ascending = true)
         {
-            sort(current_->data_, current_->data_ + current_->size_);
-
-            if (!ascending)
-                reverse(current_->data_, current_->data_ + current_->size_);
+            current_->order(ascending);
+            return *this;
         }
     };
 
@@ -241,7 +255,7 @@ class ListOfArrays {
 			}
 		}
 		return *this;
-}
+    }
 
     int size() const
     {
@@ -308,7 +322,7 @@ class ListOfArrays {
         return Iterator(*this, head_);
     }
 
-    ListOfArrays& ordered(bool ascending = true)
+    ListOfArrays& ordered(bool ascending = true) // TODO
     {
         return *this;
     }
