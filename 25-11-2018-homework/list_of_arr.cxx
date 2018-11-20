@@ -388,10 +388,9 @@ ListOfArrays handle_input(vector<int>& input)
 
 void handle_commands(ListOfArrays list)  // Reads one line of commands
 {
-    char delimeter = '.'
     string line, cmd;
-    getline(cin, line);
+	getline(cin, line);
     do {
-        cmd = line.substr(0, line.find(delimeter));
-    } while (line.find(delimeter) != string::npos)
+			cmd = std::getline(line, cmd, '.');
+    } while (line.find('\n') != string::npos);
 }
