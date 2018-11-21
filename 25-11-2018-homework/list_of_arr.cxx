@@ -3,6 +3,7 @@
 #include<map>
 #include<algorithm>
 #include<string>
+#include <sstream>
 
 using namespace std;
 
@@ -233,14 +234,13 @@ class ListOfArrays {
     ListOfArrays(const ListOfArrays& other)
     : ListOfArrays()
     {
-        for(auto current = other.head_->next_; current != head_; current = current->next_){
+        for(auto current = other.head_->next_; current != other.head_; current = current->next_){
             push(current->data_, 0, current->size_);
         }
     }
 
 	ListOfArrays& operator=(const ListOfArrays& other)
     {
-        cout << "init";
 		if (this != &other)
         {
 			clear();
@@ -327,36 +327,37 @@ class ListOfArrays {
     ListOfArrays& operator*=(const int& coef)
     {
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
-            arr->operator*=(coef);
+            *arr *= coef;
         return *this;
     }
 
     ListOfArrays& operator+=(const int& value)
     {
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
-            arr->operator*=(value);
+            *arr += value;
         return *this;
     }
 
     void show() const
     {
+        cout << "> ";
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
             cout << *arr << (arr->next_ == head_ ? "" : "; ");
         }
+        cout << endl;
     }
 };
 
 ListOfArrays handle_input();
-void handle_operations(ListOfArrays);
+void handle_operations(ListOfArrays&);
+bool single_line(ListOfArrays);
 
 int main(int argc, char* argv[])
 {
     ListOfArrays list;
     list = handle_input();
-    list.show();
-    cout << "smth";
-    // handle_operations(list);
+    handle_operations(list);
     return 0;
 }
 
@@ -383,21 +384,39 @@ ListOfArrays handle_input()
     return list;
 }
 
-void handle_operations(ListOfArrays list)  // Reads one line of commands
+void handle_operations(ListOfArrays& list)  // Reads one line of commands
 {
-    string cmd;
+    while (true)
+    {
+        try
+        {
+            if (single_line(list)) return;
+        }
+        catch(InvalidOperationException e)
+        {
+            cout << "ERROR: Unknown operation" << endl;
+        }
+    }
+}
+
+bool single_line(ListOfArrays list)
+{
+    string cmd, line;
     char flags = 0;
     auto temp_array = new double[list.size()];
     enum flags_t {
         ITERATOR = 0x1,
-        ANY_ARRAY = 0x2,
-        ARRAY_INT_USED = 0x4 | ANY_ARRAY,
-        ARRAY_DOUB_USED = 0x8 | ANY_ARRAY
+        ANY_ARRAY = 0xC,
+        ARRAY_INT_USED = 0x4,
+        ARRAY_DOUB_USED = 0x8
     };
     cout << "> ";
+    getline(cin, line);
+    istringstream line_stream(line);
     do {
-		getline(cin, cmd, '.');
-        if (cmd == "size")list.size();
+        getline(line_stream, cmd, '.');
+        if (cmd == "quit") return true;
+        else if (cmd == "size") cout << "> " << list.size() << endl;
         else if (cmd == "show") list.show();
         else if (cmd == "averages")
         {
@@ -430,9 +449,9 @@ void handle_operations(ListOfArrays list)  // Reads one line of commands
                 list.ordered(cmd.find("true") != string::npos ? true : false);
             }
         }
-
         else
         {
+            cout << cmd << endl;
             throw InvalidOperationException();
         }
 
@@ -445,6 +464,8 @@ void handle_operations(ListOfArrays list)  // Reads one line of commands
                 << (i < list.size() ? ' ' : '\n');
             }
         }
+
         flags &= ITERATOR;  // Saves only iterator flag
-    } while (cmd.find('\n') != string::npos);
+    } while (!line_stream.eof());
+    return false;
 }
