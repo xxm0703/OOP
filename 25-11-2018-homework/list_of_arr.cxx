@@ -404,6 +404,7 @@ bool single_line(ListOfArrays list)
     string cmd, line;
     char flags = 0;
     auto temp_array = new double[list.size()];
+    ListOfArrays::Iterator it = list.begin();;
     enum flags_t {
         ITERATOR = 0x1,
         ANY_ARRAY = 0xC,
@@ -416,55 +417,80 @@ bool single_line(ListOfArrays list)
     do {
         getline(line_stream, cmd, '.');
         if (cmd == "quit") return true;
-        else if (cmd == "size") cout << "> " << list.size() << endl;
-        else if (cmd == "show") list.show();
-        else if (cmd == "averages")
+        if (!(flags | ITERATOR))
         {
-            list.averages(temp_array);
-            flags |= ARRAY_DOUB_USED;
-        }
-        else if (cmd == "medians")
-        {
-            list.medians(temp_array);
-            flags |= ARRAY_DOUB_USED;
-        }
-        else if (cmd == "sums")
-        {
-            list.sums((int *)(temp_array));
-            flags |= ARRAY_INT_USED;
-        }
-        else if (cmd == "sizes")
-        {
-            list.sizes((int *)(temp_array));
-            flags |= ARRAY_INT_USED;
-        }
-
-        else if (cmd.find(':') != string::npos)
-        {
-            int argument = stoi(cmd.substr(cmd.find(':') + 1));
-            if (cmd.find("mul") != string::npos) list *= argument;
-            else if (cmd.find("add") != string::npos) list += argument;
-            else if (cmd.find("ordered") != string::npos)
+            if (cmd == "size") cout << "> " << list.size() << endl;
+            else if (cmd == "show") list.show();
+            else if (cmd == "begin")
             {
-                list.ordered(cmd.find("true") != string::npos ? true : false);
+                flags |= ITERATOR;
+            }
+            else if (cmd == "averages")
+            {
+                list.averages(temp_array);
+                flags |= ARRAY_DOUB_USED;
+            }
+            else if (cmd == "medians")
+            {
+                list.medians(temp_array);
+                flags |= ARRAY_DOUB_USED;
+            }
+            else if (cmd == "sums")
+            {
+                list.sums((int *)(temp_array));
+                flags |= ARRAY_INT_USED;
+            }
+            else if (cmd == "sizes")
+            {
+                list.sizes((int *)(temp_array));
+                flags |= ARRAY_INT_USED;
+            }
+
+            else if (cmd.find(':') != string::npos)
+            {
+                string argument = cmd.substr(cmd.find(':') + 1);
+                if (cmd.find("mul") != string::npos) list *= stoi(argument);
+                else if (cmd.find("add") != string::npos) list += stoi(argument);
+                else if (cmd.find("ordered") != string::npos)
+                {
+                    list.ordered(argument == "true" ? true : false);
+                }
+            }
+            else
+            {
+                cout << cmd << endl;
+                throw InvalidOperationException();
+            }
+
+            if (flags & ANY_ARRAY)
+            {
+                cout << "> ";
+                for (int i = 0; i < list.size(); ++i)
+                {
+                    cout << (flags & ARRAY_INT_USED ? ((int *)(temp_array))[i] : temp_array[i])
+                    << (i < list.size() ? ' ' : '\n');
+                }
             }
         }
         else
         {
-            cout << cmd << endl;
-            throw InvalidOperationException();
-        }
+            if (cmd == "next") it++;
+            else if (cmd == "show") it.show();
+            else if (cmd == "size") it.size();
+            else if (cmd == "sum") it.sum();
+            else if (cmd == "average") it.average();
+            else if (cmd == "median") it.median();
 
-        if (flags & ANY_ARRAY)
-        {
-            cout << "> ";
-            for (int i = 0; i < list.size(); ++i)
+            else if (cmd.find(':') != string::npos)
             {
-                cout << (flags & ARRAY_INT_USED ? ((int *)(temp_array))[i] : temp_array[i])
-                << (i < list.size() ? ' ' : '\n');
+                string argument = cmd.substr(cmd.find(':') + 1);
+                if (cmd.find("at") != string::npos) it[stoi(argument)];
+                else if (cmd.find("ordered") != string::npos)
+                {
+                    list.ordered(argument == "true" ? true : false);
+                }
             }
         }
-
         flags &= ITERATOR;  // Saves only iterator flag
     } while (!line_stream.eof());
     return false;
