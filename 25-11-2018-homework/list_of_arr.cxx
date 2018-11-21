@@ -244,7 +244,7 @@ class ListOfArrays {
 		if (this != &other)
         {
 			clear();
-            for(auto current = other.head_->next_; current != head_; current = current->next_)
+            for(auto current = other.head_->next_; current != other.head_; current = current->next_)
             {
                 push(current->data_, 0, current->size_);
             }
