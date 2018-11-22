@@ -51,7 +51,7 @@ class ListOfArrays {
 
         double average() const
         {
-            return sum()/size_;
+            return sum()/(double)(size_);
         }
 
         double median() const
@@ -63,7 +63,7 @@ class ListOfArrays {
             if (size_ % 2)
                 median_value = tmp[size_ / 2];
             else
-                median_value = (tmp[size_ / 2] + tmp[size_ / 2 + 1]) / 2;
+                median_value = (tmp[size_ / 2 - 1] + tmp[size_ / 2]) / 2.0;
             delete []tmp;
             return median_value;
         }
@@ -269,7 +269,6 @@ class ListOfArrays {
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
 			averages[i++] = arr->average();
-            arr = arr->next_;
 		}
     }
 
@@ -278,9 +277,7 @@ class ListOfArrays {
 		int i = 0;
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
-			cout << size_;
 			medians[i++] = arr->median();
-            arr = arr->next_;
 		}
     }
 
@@ -290,7 +287,6 @@ class ListOfArrays {
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
 			sizes[i++] = arr->size();
-            arr = arr->next_;
 		}
 	}
 
@@ -300,7 +296,6 @@ class ListOfArrays {
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
 			sums[i++] = arr->sum();
-            arr = arr->next_;
 		}
     }
 
@@ -335,7 +330,6 @@ class ListOfArrays {
 
     void show() const
     {
-        cout << "> ";
         for (ArrayNode *arr = head_->next_; arr != head_; arr = arr->next_)
         {
             cout << *arr << (arr->next_ == head_ ? "" : "; ");
@@ -362,6 +356,8 @@ ListOfArrays handle_input()
     ListOfArrays list;
     int read_value, array_offset = 0;
     char delimeter;
+
+    cout << "> ";
 
     do {
         cin >> read_value;
@@ -414,7 +410,7 @@ bool single_line(ListOfArrays list)
         if (cmd == "quit") return true;
         if (!(flags & ITERATOR))
         {
-            if (cmd == "size") cout << "> " << list.size() << endl;
+            if (cmd == "size") cout << list.size() << endl;
             else if (cmd == "show") list.show();
             else if (cmd == "begin")
             {
@@ -459,7 +455,6 @@ bool single_line(ListOfArrays list)
 
             if (flags & ANY_ARRAY)
             {
-                cout << "> ";
                 for (int i = 0; i < list.size(); ++i)
                 {
                     cout << (flags & ARRAY_INT_USED ? ((int *)(temp_array))[i] : temp_array[i])
