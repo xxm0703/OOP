@@ -1,13 +1,11 @@
 #include<iostream>
 #include<vector>
-#include<map>
+#include<exception>
 #include<algorithm>
 #include<string>
-#include <sstream>
+#include<sstream>
 
 using namespace std;
-
-class InvalidOperationException {};
 
 class ListOfArrays {
 
@@ -180,6 +178,8 @@ class ListOfArrays {
         Iterator& operator++()
         {
             current_ = current_->next_;
+            if(current_ == list_.head_)
+                throw runtime_error("ERROR: End of iteration");
             return *this;
         }
 
@@ -202,7 +202,7 @@ class ListOfArrays {
 
         void show() const
         {
-            cout << current_;
+            cout << *current_ << endl;
         }
 
         double average() const
@@ -328,13 +328,17 @@ class ListOfArrays {
     ListOfArrays& ordered(bool ascending = true) // TODO
     {
         bool unsorted = true;
+
         while(unsorted) {
             unsorted = false;
+
             ArrayNode *cur = head_->next_;
             cur->order(ascending);
-            while(cur->next_ != head_) {
+
+            while(cur->next_ != head_ && cur != head_) {
                 ArrayNode *next = cur->next_;
                 next->order(ascending);
+
                 if(!compare(cur, next, ascending)) {
                     swap(cur, next);
                     unsorted = true;
@@ -415,9 +419,9 @@ void handle_operations(ListOfArrays& list)  // Reads one line of commands
         {
             if (single_line(list)) return;
         }
-        catch(InvalidOperationException e)
+        catch(runtime_error e)
         {
-            cout << "ERROR: Unknown operation" << endl;
+            cout << e.what() << endl;
         }
     }
 }
@@ -482,7 +486,7 @@ bool single_line(ListOfArrays list)
             else
             {
                 cout << cmd << endl;
-                throw InvalidOperationException();
+                throw runtime_error("ERROR: Unknown operation");
             }
 
             if (flags & ANY_ARRAY)
@@ -496,7 +500,7 @@ bool single_line(ListOfArrays list)
         }
         else
         {
-            if (cmd == "next") it++;
+            if (cmd == "next") ++it;
             else if (cmd == "show") it.show();
             else if (cmd == "size") it.size();
             else if (cmd == "sum") it.sum();
