@@ -117,12 +117,12 @@ class ListOfArrays {
         rearrange(second, first);
     }
 
-    bool compare(const ArrayNode *first, const ArrayNode *second) const
+    bool compare(const ArrayNode *first, const ArrayNode *second, bool ascending) const
     {
         for (int i = 0; ; ++i)
         {
-            if (i == first->size_ || (*first)[i] < (*second)[i]) return true;
-            if (i == second->size_ || (*first)[i] > (*second)[i]) return false;
+            if (i == first->size_ || (*first)[i] < (*second)[i]) return ascending;
+            if (i == second->size_ || (*first)[i] > (*second)[i]) return !ascending;
         }
     }
 
@@ -330,13 +330,12 @@ class ListOfArrays {
         bool unsorted = true;
         while(unsorted) {
             unsorted = false;
-            ArrayNode *cur = head_;
+            ArrayNode *cur = head_->next_;
             cur->order(ascending);
             while(cur->next_ != head_) {
                 ArrayNode *next = cur->next_;
                 next->order(ascending);
-
-                if(!compare(cur, next)) {
+                if(!compare(cur, next, ascending)) {
                     swap(cur, next);
                     unsorted = true;
                 }
