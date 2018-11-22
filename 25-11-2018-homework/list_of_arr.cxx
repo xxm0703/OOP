@@ -19,12 +19,6 @@ class ListOfArrays {
         ArrayNode(int *data, int size)
             : data_(data), size_(size), next_(0), prev_(0) {}
 
-        // ArrayNode(const ArrayNode& other)
-        //     : size_(other.size_), next_(0), prev_(0) {
-        //         data_ = new int[size_];
-        //         copy(other.data_, other.data_ + size_, data_);
-        //     }
-
         ~ArrayNode()
         {
             delete []data_;
@@ -284,6 +278,7 @@ class ListOfArrays {
 		int i = 0;
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
+			cout << size_;
 			medians[i++] = arr->median();
             arr = arr->next_;
 		}
@@ -341,7 +336,7 @@ class ListOfArrays {
     void show() const
     {
         cout << "> ";
-        for (auto arr = head_->next_; arr != head_; arr = arr->next_)
+        for (ArrayNode *arr = head_->next_; arr != head_; arr = arr->next_)
         {
             cout << *arr << (arr->next_ == head_ ? "" : "; ");
         }
@@ -417,7 +412,7 @@ bool single_line(ListOfArrays list)
     do {
         getline(line_stream, cmd, '.');
         if (cmd == "quit") return true;
-        if (!(flags | ITERATOR))
+        if (!(flags & ITERATOR))
         {
             if (cmd == "size") cout << "> " << list.size() << endl;
             else if (cmd == "show") list.show();
@@ -468,7 +463,7 @@ bool single_line(ListOfArrays list)
                 for (int i = 0; i < list.size(); ++i)
                 {
                     cout << (flags & ARRAY_INT_USED ? ((int *)(temp_array))[i] : temp_array[i])
-                    << (i < list.size() ? ' ' : '\n');
+                    << (i < list.size() - 1 ? ' ' : '\n');
                 }
             }
         }
