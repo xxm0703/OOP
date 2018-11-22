@@ -1,9 +1,13 @@
 #include<iostream>
 #include<vector>
+#include<map>
 #include<algorithm>
-#include<numeric>
+#include<string>
+#include <sstream>
 
 using namespace std;
+
+class InvalidOperationException {};
 
 class ListOfArrays {
 
@@ -75,7 +79,7 @@ class ListOfArrays {
 			return size_;
 		}
 
-        int& at(const int& index) const
+        int& at(const int& index)
         {
             return data_[index];
         }
@@ -228,32 +232,22 @@ class ListOfArrays {
     }
 
     ListOfArrays(const ListOfArrays& other)
-        : head_(new ArrayNode(0, 0)), size_(0)
-        {
-    		ArrayNode* node = other.head_->next_;
-    		while (node != other.head_)
-            {
-                int *data = new int[node->size_];
-                copy(node->data_, node->data_ + node->size_, data);
-                push(data, 0, node->size_);
-    			node = node->next_;
-    		}
+    : ListOfArrays()
+    {
+        for(auto current = other.head_->next_; current != other.head_; current = current->next_){
+            push(current->data_, 0, current->size_);
         }
+    }
 
 	ListOfArrays& operator=(const ListOfArrays& other)
     {
 		if (this != &other)
         {
 			clear();
-            head_ = new ArrayNode(0, 0);
-			ArrayNode* node = other.head_->next_;
-			while (node != other.head_)
+            for(auto current = other.head_->next_; current != other.head_; current = current->next_)
             {
-                int *data = new int[node->size_];
-                copy(node->data_, node->data_ + node->size_, data);
-                push(data, 0, node->size_);
-				node = node->next_;
-			}
+                push(current->data_, 0, current->size_);
+            }
 		}
 		return *this;
     }
@@ -265,7 +259,9 @@ class ListOfArrays {
 
     void push(int array[], int position, int length)
     {
-		auto *new_node = new ArrayNode(array + position, length);
+        int *data = new int[length];
+        copy(array + position, array + position + length, data);
+		auto *new_node = new ArrayNode(data, length);
 		ArrayNode *last = head_->prev_;
 
 		rearrange(new_node, head_);
@@ -331,40 +327,43 @@ class ListOfArrays {
     ListOfArrays& operator*=(const int& coef)
     {
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
-            arr->operator*=(coef);
+            *arr *= coef;
         return *this;
     }
 
     ListOfArrays& operator+=(const int& value)
     {
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
-            arr->operator*=(value);
+            *arr += value;
         return *this;
     }
 
     void show() const
     {
+        cout << "> ";
         for (auto arr = head_->next_; arr != head_; arr = arr->next_)
         {
-            cout << arr << (arr->next_ == head_ ? "" : "; ");
-            arr = arr->next_;
+            cout << *arr << (arr->next_ == head_ ? "" : "; ");
         }
+        cout << endl;
     }
 };
 
-ListOfArrays handle_input(vector<int>&);
-void handle_commands(ListOfArrays&);
+ListOfArrays handle_input();
+void handle_operations(ListOfArrays&);
+bool single_line(ListOfArrays);
 
 int main(int argc, char* argv[])
 {
-    vector<int> input_vector;  // Must stay in the scope in order to save the data
-    handle_input(input_vector);
-
+    ListOfArrays list;
+    list = handle_input();
+    handle_operations(list);
     return 0;
 }
 
-ListOfArrays handle_input(vector<int>& input)
+ListOfArrays handle_input()
 {
+    vector<int> input;
     ListOfArrays list;
     int read_value, array_offset = 0;
     char delimeter;
@@ -380,17 +379,119 @@ ListOfArrays handle_input(vector<int>& input)
             list.push(input.data(), array_offset, input.size() - array_offset);
             array_offset = input.size();
         }
-
     } while (delimeter != '\n');
 
     return list;
 }
 
-void handle_commands(ListOfArrays list)  // Reads one line of commands
+void handle_operations(ListOfArrays& list)  // Reads one line of commands
 {
-    string line, cmd;
-	getline(cin, line);
+    while (true)
+    {
+        try
+        {
+            if (single_line(list)) return;
+        }
+        catch(InvalidOperationException e)
+        {
+            cout << "ERROR: Unknown operation" << endl;
+        }
+    }
+}
+
+bool single_line(ListOfArrays list)
+{
+    string cmd, line;
+    char flags = 0;
+    auto temp_array = new double[list.size()];
+    ListOfArrays::Iterator it = list.begin();;
+    enum flags_t {
+        ITERATOR = 0x1,
+        ANY_ARRAY = 0xC,
+        ARRAY_INT_USED = 0x4,
+        ARRAY_DOUB_USED = 0x8
+    };
+    cout << "> ";
+    getline(cin, line);
+    istringstream line_stream(line);
     do {
-			cmd = std::getline(line, cmd, '.');
-    } while (line.find('\n') != string::npos);
+        getline(line_stream, cmd, '.');
+        if (cmd == "quit") return true;
+        if (!(flags | ITERATOR))
+        {
+            if (cmd == "size") cout << "> " << list.size() << endl;
+            else if (cmd == "show") list.show();
+            else if (cmd == "begin")
+            {
+                flags |= ITERATOR;
+            }
+            else if (cmd == "averages")
+            {
+                list.averages(temp_array);
+                flags |= ARRAY_DOUB_USED;
+            }
+            else if (cmd == "medians")
+            {
+                list.medians(temp_array);
+                flags |= ARRAY_DOUB_USED;
+            }
+            else if (cmd == "sums")
+            {
+                list.sums((int *)(temp_array));
+                flags |= ARRAY_INT_USED;
+            }
+            else if (cmd == "sizes")
+            {
+                list.sizes((int *)(temp_array));
+                flags |= ARRAY_INT_USED;
+            }
+
+            else if (cmd.find(':') != string::npos)
+            {
+                string argument = cmd.substr(cmd.find(':') + 1);
+                if (cmd.find("mul") != string::npos) list *= stoi(argument);
+                else if (cmd.find("add") != string::npos) list += stoi(argument);
+                else if (cmd.find("ordered") != string::npos)
+                {
+                    list.ordered(argument == "true" ? true : false);
+                }
+            }
+            else
+            {
+                cout << cmd << endl;
+                throw InvalidOperationException();
+            }
+
+            if (flags & ANY_ARRAY)
+            {
+                cout << "> ";
+                for (int i = 0; i < list.size(); ++i)
+                {
+                    cout << (flags & ARRAY_INT_USED ? ((int *)(temp_array))[i] : temp_array[i])
+                    << (i < list.size() ? ' ' : '\n');
+                }
+            }
+        }
+        else
+        {
+            if (cmd == "next") it++;
+            else if (cmd == "show") it.show();
+            else if (cmd == "size") it.size();
+            else if (cmd == "sum") it.sum();
+            else if (cmd == "average") it.average();
+            else if (cmd == "median") it.median();
+
+            else if (cmd.find(':') != string::npos)
+            {
+                string argument = cmd.substr(cmd.find(':') + 1);
+                if (cmd.find("at") != string::npos) it[stoi(argument)];
+                else if (cmd.find("ordered") != string::npos)
+                {
+                    list.ordered(argument == "true" ? true : false);
+                }
+            }
+        }
+        flags &= ITERATOR;  // Saves only iterator flag
+    } while (!line_stream.eof());
+    return false;
 }
