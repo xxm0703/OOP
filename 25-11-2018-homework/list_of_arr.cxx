@@ -17,7 +17,7 @@ class ListOfArrays {
         ArrayNode *next_, *prev_;
 
         ArrayNode(int *data, int size)
-            : data_(data), size_(size), next_(0), prev_(0) {}
+            : data_(data), size_(size), next_(nullptr), prev_(nullptr) {}
 
         ~ArrayNode()
         {
@@ -30,6 +30,11 @@ class ListOfArrays {
             {
                 data_[i] *= coef;
             }
+        }
+
+        int operator[](const int& index) const
+        {
+            return data_[index];
         }
 
         void operator+=(const int value)
@@ -57,7 +62,7 @@ class ListOfArrays {
         double median() const
         {
             double median_value;
-            int *tmp = new int[size_];
+            auto *tmp = new int[size_];
             copy(data_, data_ + size_, tmp);
             sort(tmp, tmp + size_);
             if (size_ % 2)
@@ -88,7 +93,7 @@ class ListOfArrays {
 
         friend ostream& operator << (ostream& os, const ListOfArrays::ArrayNode& arr)
         {
-            for(int i = 0; i < arr.size_; ++i)
+            for (int i = 0; i < arr.size_; ++i)
             {
                 os << arr.data_[i] << (i < arr.size_ - 1 ? " " : "");
             }
@@ -110,6 +115,15 @@ class ListOfArrays {
         rearrange(first->prev_, second);
         rearrange(first, second->next_);
         rearrange(second, first);
+    }
+
+    bool compare(const ArrayNode *first, const ArrayNode *second) const
+    {
+        for (int i = 0; ; ++i)
+        {
+            if (i == first->size_ || (*first)[i] < (*second)[i]) return true;
+            if (i == second->size_ || (*first)[i] > (*second)[i]) return false;
+        }
     }
 
     void pop ()
@@ -140,11 +154,11 @@ class ListOfArrays {
         friend ListOfArrays;
 
         ListOfArrays& list_;
-        ArrayNode* current_;
+        ArrayNode *current_;
 
-		ArrayNode &operator*()
+		ArrayNode *operator*()
         {
-			return *current_;
+			return current_;
 		}
 
         public:
@@ -169,7 +183,7 @@ class ListOfArrays {
             return *this;
         }
 
-        Iterator operator++(int)
+        const Iterator operator++(int)
         {
             auto tmp = Iterator(list_, current_);
             ++(*this);
@@ -214,10 +228,11 @@ class ListOfArrays {
     };
 
     ListOfArrays()
-            : head_(new ArrayNode(0, 0)), size_(0) {
-        head_->next_ = head_;
-        head_->prev_ = head_;
-    }
+            : head_(new ArrayNode(nullptr, 0)), size_(0) 
+        {
+            head_->next_ = head_;
+            head_->prev_ = head_;
+        }
 
 	~ListOfArrays()
     {
@@ -228,7 +243,8 @@ class ListOfArrays {
     ListOfArrays(const ListOfArrays& other)
     : ListOfArrays()
     {
-        for(auto current = other.head_->next_; current != other.head_; current = current->next_){
+        for (auto current = other.head_->next_; current != other.head_; current = current->next_)
+        {
             push(current->data_, 0, current->size_);
         }
     }
@@ -238,7 +254,7 @@ class ListOfArrays {
 		if (this != &other)
         {
 			clear();
-            for(auto current = other.head_->next_; current != other.head_; current = current->next_)
+            for (auto current = other.head_->next_; current != other.head_; current = current->next_)
             {
                 push(current->data_, 0, current->size_);
             }
@@ -253,7 +269,7 @@ class ListOfArrays {
 
     void push(int array[], int position, int length)
     {
-        int *data = new int[length];
+        auto *data = new int[length];
         copy(array + position, array + position + length, data);
 		auto *new_node = new ArrayNode(data, length);
 		ArrayNode *last = head_->prev_;
@@ -311,6 +327,23 @@ class ListOfArrays {
 
     ListOfArrays& ordered(bool ascending = true) // TODO
     {
+        bool unsorted = true;
+        while(unsorted) {
+            unsorted = false;
+            ArrayNode *cur = head_;
+            cur->order(ascending);
+            while(cur->next_ != head_) {
+                ArrayNode *next = cur->next_;
+                next->order(ascending);
+
+                if(!compare(cur, next)) {
+                    swap(cur, next);
+                    unsorted = true;
+                }
+
+                cur = cur->next_;
+            }
+        }
         return *this;
     }
 
@@ -444,7 +477,7 @@ bool single_line(ListOfArrays list)
                 else if (cmd.find("add") != string::npos) list += stoi(argument);
                 else if (cmd.find("ordered") != string::npos)
                 {
-                    list.ordered(argument == "true" ? true : false);
+                    list.ordered(argument == "true");
                 }
             }
             else
@@ -477,7 +510,7 @@ bool single_line(ListOfArrays list)
                 if (cmd.find("at") != string::npos) it[stoi(argument)];
                 else if (cmd.find("ordered") != string::npos)
                 {
-                    list.ordered(argument == "true" ? true : false);
+                    it.ordered(argument == "true");
                 }
             }
         }
