@@ -193,7 +193,7 @@ class ListOfArrays {
         int& operator[](const int& index)
         {
 		    if (index >= size())
-                throw logic_error("ERROR: End of iteration");
+                throw logic_error("ERROR: Index out of bounds");
             return current_->at(index);
         }
 
@@ -230,7 +230,7 @@ class ListOfArrays {
     };
 
     ListOfArrays()
-            : head_(new ArrayNode(nullptr, 0)), size_(0) 
+            : head_(new ArrayNode(nullptr, 0)), size_(0)
         {
             head_->next_ = head_;
             head_->prev_ = head_;
@@ -382,13 +382,13 @@ bool single_line(ListOfArrays);
 
 int main(int argc, char* argv[])
 {
-    ListOfArrays list;
-    list = handle_input();
+    ListOfArrays list = handle_input();
     handle_operations(list);
+
     return 0;
 }
 
-ListOfArrays handle_input()
+ListOfArrays handle_input()  // Reads the List
 {
     vector<int> input;
     ListOfArrays list;
@@ -413,7 +413,7 @@ ListOfArrays handle_input()
     return list;
 }
 
-void handle_operations(ListOfArrays& list)  // Reads one line of commands
+void handle_operations(ListOfArrays& list)  // All lines of commands
 {
     while (true)
     {
@@ -421,32 +421,35 @@ void handle_operations(ListOfArrays& list)  // Reads one line of commands
         {
             if (single_line(list)) return;
         }
-        catch(runtime_error e)
+        catch(runtime_error& e)
         {
             cout << e.what() << endl;
         }
     }
 }
 
-bool single_line(ListOfArrays list)
+bool single_line(ListOfArrays list)  // returns true for quit
 {
     string cmd, line;
     char flags = 0;
-    auto temp_array = new double[list.size()];
-    ListOfArrays::Iterator it = list.begin();;
+    double temp_array[list.size()];  // temporary array
+    ListOfArrays::Iterator it = list.begin();;  // temporary iterator
     enum flags_t {
         ITERATOR = 0x1,
         ANY_ARRAY = 0xC,
         ARRAY_INT_USED = 0x4,
         ARRAY_DOUB_USED = 0x8
     };
+
     cout << "> ";
     getline(cin, line);
     istringstream line_stream(line);
+
     do {
         getline(line_stream, cmd, '.');
+        while(cmd.back() == ' ') cmd.pop_back();  // Trim the whitespaces
         if (cmd == "quit") return true;
-        if (!(flags & ITERATOR))
+        if (!(flags & ITERATOR))  // List commands
         {
             if (cmd == "size") cout << list.size() << endl;
             else if (cmd == "show") list.show();
@@ -499,7 +502,7 @@ bool single_line(ListOfArrays list)
                 }
             }
         }
-        else
+        else  // Iterator commands
         {
             if (cmd == "next") ++it;
             else if (cmd == "show") it.show();
@@ -519,10 +522,14 @@ bool single_line(ListOfArrays list)
                         it.ordered(argument == "true");
                     }
                 }
-                catch (logic_error e)
+                catch (logic_error& e)
                 {
                     cout << e.what() << endl;
                 }
+            }
+            else
+            {
+                throw runtime_error("ERROR: Unknown operation");
             }
         }
         flags &= ITERATOR;  // Saves only iterator flag
