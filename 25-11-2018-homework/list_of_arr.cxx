@@ -192,6 +192,8 @@ class ListOfArrays {
 
         int& operator[](const int& index)
         {
+		    if (index >= size())
+                throw logic_error("ERROR: End of iteration");
             return current_->at(index);
         }
 
@@ -485,7 +487,6 @@ bool single_line(ListOfArrays list)
             }
             else
             {
-                cout << cmd << endl;
                 throw runtime_error("ERROR: Unknown operation");
             }
 
@@ -502,18 +503,25 @@ bool single_line(ListOfArrays list)
         {
             if (cmd == "next") ++it;
             else if (cmd == "show") it.show();
-            else if (cmd == "size") it.size();
-            else if (cmd == "sum") it.sum();
-            else if (cmd == "average") it.average();
-            else if (cmd == "median") it.median();
+            else if (cmd == "size") cout << it.size() << endl;
+            else if (cmd == "sum") cout << it.sum() << endl;
+            else if (cmd == "average") cout << it.average() << endl;
+            else if (cmd == "median") cout << it.median() << endl;
 
             else if (cmd.find(':') != string::npos)
             {
-                string argument = cmd.substr(cmd.find(':') + 1);
-                if (cmd.find("at") != string::npos) it[stoi(argument)];
-                else if (cmd.find("ordered") != string::npos)
+                try
                 {
-                    it.ordered(argument == "true");
+                    string argument = cmd.substr(cmd.find(':') + 1);
+                    if (cmd.find("at") != string::npos) cout << it[stoi(argument)] << endl;
+                    else if (cmd.find("ordered") != string::npos)
+                    {
+                        it.ordered(argument == "true");
+                    }
+                }
+                catch (logic_error e)
+                {
+                    cout << e.what() << endl;
                 }
             }
         }
