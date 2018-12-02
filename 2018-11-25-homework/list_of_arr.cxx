@@ -102,20 +102,20 @@ class ListOfArrays {
     ArrayNode* head_;
     int size_;
 
-    void rearrange (ArrayNode *first, ArrayNode *second)
+    void rearrange (ArrayNode *first, ArrayNode *second)  // method which makes the connections between two nodes 
     {
 		first->next_ = second;
 		second->prev_ = first;
 	}
 
-    void swap(ArrayNode *first, ArrayNode *second)
+    void swap(ArrayNode *first, ArrayNode *second)  // method swapping two nodes
     {
         rearrange(first->prev_, second);
         rearrange(first, second->next_);
         rearrange(second, first);
     }
 
-    bool compare(const ArrayNode *first, const ArrayNode *second, bool ascending) const
+    bool compare(const ArrayNode *first, const ArrayNode *second, bool ascending) const  // The rule for comparing tho nodes
     {
         for (int i = 0; ; ++i)
         {
@@ -182,17 +182,17 @@ class ListOfArrays {
                 throw runtime_error("ERROR: End of iteration");
             return *this;
         }
-
-        const Iterator operator++(int)
+/*
+        const Iterator operator++(int)  // Actually not using it cause prefix should be faster
         {
             auto tmp = Iterator(list_, current_);
             ++(*this);
             return tmp;
         }
-
+*/
         int& operator[](const int& index)
         {
-		    if (index >= size())
+		    if (index >= size() || index < 0)
                 throw logic_error("ERROR: Index out of bounds");
             return current_->at(index);
         }
