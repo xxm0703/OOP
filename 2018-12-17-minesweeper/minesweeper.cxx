@@ -49,8 +49,6 @@ istream& operator>>(istream& in, point& p) {
     return in;
 }
 
-/* Enter your code here. */
-
 class minesweeper
 {
     struct cell
@@ -86,13 +84,13 @@ class minesweeper
           if (has_flag_) return '!';
           if (!opened_) return '_';
           if (is_bomb_) return '*';
-          return bomb_neighbors;
+          return '0' + bomb_neighbors;
         }
     };
 
-    long index (int i, int j)
+    long index (int x, int y) const
     {
-        return i * height_ + j;
+        return x + y * width_;
     }
 
     cell *cells_;
@@ -109,9 +107,15 @@ public:
       // Setting the bombs
       for (vector<point>::const_iterator it = bombs.begin(); it != bombs.end(); ++it)
       {
-          long i = index((*it).get_y(), (*it).get_x());
+          long i = index((*it).get_x(), (*it).get_y());
           cells_[i].is_bomb_ = true;
       }
+
+  }
+
+  ~minesweeper()
+  {
+    delete []cells_;
   }
 
   void run()
@@ -119,30 +123,52 @@ public:
 
   }
 
-  void print_board()
+  void spread(int x, int y)
   {
-      for (int i = 0; i < height_; ++i)
+    if (cells_[index(x, y)].opened_) return;
+
+    cells_[index(x, y)].opened_ = true;
+
+    if (check_neighbors(x, y)) return;
+
+    if (x > 0) spread(x - 1, y);
+    if (x < width_ - 1) spread(x + 1, y);
+
+    if (y > 0) spread(x, y - 1);
+    if (y < height_ - 1) spread(x, y + 1);
+
+    if (x > 0 && y > 0) spread(x - 1, y - 1);
+    if (x < width_ - 1 && y < height_ - 1) spread(x + 1, y + 1);
+
+    if (x > 0 && y < height_ - 1) spread(x - 1, y + 1);
+    if (x < width_ - 1 && y > 0) spread(x + 1, y - 1);
+
+  }
+
+  void print_board() const
+  {
+      for (int y = 0; y < height_; ++y)
       {
-          for (int j = 0; j < width_; ++j)
-            out_ << cells_[index(i, j)].print(check_neighbors(i, j));
+          for (int x = 0; x < width_; ++x)
+            out_ << cells_[index(x, y)].print(check_neighbors(x, y));
           out_ << endl;
       }
   }
 
-  short check_neighbors(int i, int j)
+  short check_neighbors(int x, int y) const
   {
       short bombs = 0;
-      if (i > 0 && cells_[index(i - 1, j)].is_bomb_) bombs++;
-      if (i < height_ - 1 && cells_[index(i + 1, j)].is_bomb_) bombs++;
+      if (x > 0 && cells_[index(x - 1, y)].is_bomb_) bombs++;
+      if (x < width_ - 1 && cells_[index(x + 1, y)].is_bomb_) bombs++;
 
-      if (j > 0 && cells_[index(i, j - 1)].is_bomb_) bombs++;
-      if (j < width_ - 1 && cells_[index(i, j + 1)].is_bomb_) bombs++;
+      if (y > 0 && cells_[index(x, y - 1)].is_bomb_) bombs++;
+      if (y < height_ - 1 && cells_[index(x, y + 1)].is_bomb_) bombs++;
 
-      if (i > 0 && j > 0 && cells_[index(i - 1, j - 1)].is_bomb_) bombs++;
-      if (i < height_ - 1 && j < width_ - 1 && cells_[index(i + 1, j + 1)].is_bomb_) bombs++;
+      if (x > 0 && y > 0 && cells_[index(x - 1, y - 1)].is_bomb_) bombs++;
+      if (x < width_ - 1 && y < height_ - 1 && cells_[index(x + 1, y + 1)].is_bomb_) bombs++;
 
-      if (i > 0 && j < width_ - 1 && cells_[index(i - 1, j + 1)].is_bomb_) bombs++;
-      if (i < height_ - 1 && j > 0 && cells_[index(i + 1, j - 1)].is_bomb_) bombs++;
+      if (x > 0 && y < height_ - 1 && cells_[index(x - 1, y + 1)].is_bomb_) bombs++;
+      if (x < width_ - 1 && y > 0 && cells_[index(x + 1, y - 1)].is_bomb_) bombs++;
 
       return bombs;
   }
@@ -171,6 +197,10 @@ int main() {
     bombs.push_back(p);
   }
   minesweeper game(width, height, bombs, cin, cout);
+  game.print_board();
+  game.spread(0,0);
+  // game.spread(2,2);
+  cout << endl << endl;
   game.print_board();
   game.run();
   return 0;
