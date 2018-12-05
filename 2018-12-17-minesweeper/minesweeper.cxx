@@ -77,17 +77,9 @@ class minesweeper
 
             return is_bomb_;
         }
-
-        char print(short bomb_neighbors)
-        {
-          // return (has_flag_ ? '!' : (!opened_ ? '_' : (is_bomb_ ? '*' : bomb_neighbors)));
-          if (has_flag_) return '!';
-          if (!opened_) return '_';
-          if (is_bomb_) return '*';
-          return '0' + bomb_neighbors;
-        }
     };
 
+    // Converts
     long index (int x, int y) const
     {
         return x + y * width_;
@@ -123,6 +115,26 @@ public:
 
   }
 
+  void print_board() const
+  {
+      for (int y = 0; y < height_; ++y)
+      {
+          for (int x = 0; x < width_; ++x)
+            out_ << represent_cell(cells_[index(x, y)], check_neighbors(x, y));
+          out_ << endl;
+      }
+  }
+
+  static char represent_cell(const cell& c, short bomb_neighbors)
+  {
+    // return (has_flag_ ? '!' : (!opened_ ? '_' : (is_bomb_ ? '*' : bomb_neighbors)));
+    if (c.has_flag_) return '!';
+    if (!c.opened_) return '_';
+    if (c.is_bomb_) return '*';
+    return '0' + bomb_neighbors;
+  }
+
+  // Recursivly opens cells
   void spread(int x, int y)
   {
     if (cells_[index(x, y)].opened_) return;
@@ -143,16 +155,6 @@ public:
     if (x > 0 && y < height_ - 1) spread(x - 1, y + 1);
     if (x < width_ - 1 && y > 0) spread(x + 1, y - 1);
 
-  }
-
-  void print_board() const
-  {
-      for (int y = 0; y < height_; ++y)
-      {
-          for (int x = 0; x < width_; ++x)
-            out_ << cells_[index(x, y)].print(check_neighbors(x, y));
-          out_ << endl;
-      }
   }
 
   short check_neighbors(int x, int y) const
@@ -199,7 +201,6 @@ int main() {
   minesweeper game(width, height, bombs, cin, cout);
   game.print_board();
   game.spread(0,0);
-  // game.spread(2,2);
   cout << endl << endl;
   game.print_board();
   game.run();
