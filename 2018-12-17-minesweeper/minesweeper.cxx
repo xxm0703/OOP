@@ -11,7 +11,8 @@
 using namespace std;
 
 class point {
-  int x_, y_;
+protected:
+    int x_, y_;
 
 public:
 
@@ -50,15 +51,100 @@ istream& operator>>(istream& in, point& p) {
 
 /* Enter your code here. */
 
-class minesweeper {
+class minesweeper
+{
+    struct cell
+    {
+        bool is_bomb_, opened_, has_flag_;
 
+        cell() :
+            is_bomb_(false), opened_(false), has_flag_(false)
+        {}
+
+        void flag()
+        {
+            if (!opened_)
+                has_flag_ = !has_flag_;
+        }
+
+        bool hint() const  // Returns is it bomb or not
+        {
+            return is_bomb_;
+        }
+
+        bool click()  // Returns is it bomb or not and sets it opened
+        {
+            if (has_flag_) has_flag_ = false;
+            else opened_ = true;
+
+            return is_bomb_;
+        }
+
+        char print(short bomb_neighbors)
+        {
+          // return (has_flag_ ? '!' : (!opened_ ? '_' : (is_bomb_ ? '*' : bomb_neighbors)));
+          if (has_flag_) return '!';
+          if (!opened_) return '_';
+          if (is_bomb_) return '*';
+          return bomb_neighbors;
+        }
+    };
+
+    long index (int i, int j)
+    {
+        return i * height_ + j;
+    }
+
+    cell *cells_;
+    int height_, width_;
+    istream& in_;
+    ostream& out_;
 public:
 
-  minesweeper(int width, int height, const vector<point>& bombs, istream& in, ostream& out) {
+  minesweeper(int width, int height, const vector<point>& bombs, istream& in, ostream& out) :
+    height_(height), width_(width), in_(in), out_(out)
+  {
+      cells_ = new cell[height * width];
+
+      // Setting the bombs
+      for (vector<point>::const_iterator it = bombs.begin(); it != bombs.end(); ++it)
+      {
+          long i = index((*it).get_y(), (*it).get_x());
+          cells_[i].is_bomb_ = true;
+      }
+  }
+
+  void run()
+  {
 
   }
 
-  void run() {
+  void print_board()
+  {
+      for (int i = 0; i < height_; ++i)
+      {
+          for (int j = 0; j < width_; ++j)
+            out_ << cells_[index(i, j)].print(check_neighbors(i, j));
+          out_ << endl;
+      }
+  }
+
+  short check_neighbors(int i, int j)
+  {
+      short bombs = 0;
+      if (i > 0 && cells_[index(i - 1, j)].is_bomb_) bombs++;
+      if (i < height_ - 1 && cells_[index(i + 1, j)].is_bomb_) bombs++;
+
+      if (j > 0 && cells_[index(i, j - 1)].is_bomb_) bombs++;
+      if (j < width_ - 1 && cells_[index(i, j + 1)].is_bomb_) bombs++;
+
+      if (i > 0 && j > 0 && cells_[index(i - 1, j - 1)].is_bomb_) bombs++;
+      if (i < height_ - 1 && j < width_ - 1 && cells_[index(i + 1, j + 1)].is_bomb_) bombs++;
+
+      if (i > 0 && j < width_ - 1 && cells_[index(i - 1, j + 1)].is_bomb_) bombs++;
+      if (i < height_ - 1 && j > 0 && cells_[index(i + 1, j - 1)].is_bomb_) bombs++;
+
+      return bombs;
   }
 };
 
@@ -85,6 +171,7 @@ int main() {
     bombs.push_back(p);
   }
   minesweeper game(width, height, bombs, cin, cout);
+  game.print_board();
   game.run();
   return 0;
 }
