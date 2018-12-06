@@ -116,28 +116,54 @@ public:
 
   void run()
   {
+    string command;
+    char delim;
+    int x, y;
 
+    // No need to check input cause it is guaranteed to be valid
+    in_ >> command >> x >> delim >> y;
+
+    if (command == "click")
+      click_cell(x, y)
+    if (command == "hint")
+      hint_cell(x, y);
+    if (command == "flag")
+      flag_cell(x, y);
+
+    print_board();
+    cout << "> ";
   }
 
-  bool click_cell(int x, int y)
+  void click_cell(int x, int y)
   {
-    return cells_[index(x, y)].click();
+    if (cells_[index(x, y)].click())
+    {
+      cout << "game over" << endl;
+      open_board();
+    }
   }
 
-  bool hint_cell(int x, int y)
+  void hint_cell(int x, int y) const
   {
-    return cells_[index(x, y)].hint();
+    // Just for fun
+    if (!cells_[index(x, y)].hint())
+      out_ << "not a ";
+    out_ << "bomb" << endl;
   }
 
+  void flag_cell(int x, int y)
+  {
+    cells_[index(x, y)].flag();
+  }
 
   void print_board() const
   {
-      for (int y = 0; y < height_; ++y)
-      {
-          for (int x = 0; x < width_; ++x)
-            out_ << represent_cell(cells_[index(x, y)], check_neighbors(x, y));
-          out_ << endl;
-      }
+    for (int y = 0; y < height_; ++y)
+    {
+      for (int x = 0; x < width_; ++x)
+        out_ << represent_cell(cells_[index(x, y)], check_neighbors(x, y));
+      out_ << endl;
+    }
   }
 
   static char represent_cell(const cell& c, short bomb_neighbors)
@@ -174,20 +200,20 @@ public:
 
   short check_neighbors(int x, int y) const
   {
-      short bombs = 0;
-      if (x > 0 && cells_[index(x - 1, y)].is_bomb_) bombs++;
-      if (x < width_ - 1 && cells_[index(x + 1, y)].is_bomb_) bombs++;
+    short bombs = 0;
+    if (x > 0 && cells_[index(x - 1, y)].is_bomb_) bombs++;
+    if (x < width_ - 1 && cells_[index(x + 1, y)].is_bomb_) bombs++;
 
-      if (y > 0 && cells_[index(x, y - 1)].is_bomb_) bombs++;
-      if (y < height_ - 1 && cells_[index(x, y + 1)].is_bomb_) bombs++;
+    if (y > 0 && cells_[index(x, y - 1)].is_bomb_) bombs++;
+    if (y < height_ - 1 && cells_[index(x, y + 1)].is_bomb_) bombs++;
 
-      if (x > 0 && y > 0 && cells_[index(x - 1, y - 1)].is_bomb_) bombs++;
-      if (x < width_ - 1 && y < height_ - 1 && cells_[index(x + 1, y + 1)].is_bomb_) bombs++;
+    if (x > 0 && y > 0 && cells_[index(x - 1, y - 1)].is_bomb_) bombs++;
+    if (x < width_ - 1 && y < height_ - 1 && cells_[index(x + 1, y + 1)].is_bomb_) bombs++;
 
-      if (x > 0 && y < height_ - 1 && cells_[index(x - 1, y + 1)].is_bomb_) bombs++;
-      if (x < width_ - 1 && y > 0 && cells_[index(x + 1, y - 1)].is_bomb_) bombs++;
+    if (x > 0 && y < height_ - 1 && cells_[index(x - 1, y + 1)].is_bomb_) bombs++;
+    if (x < width_ - 1 && y > 0 && cells_[index(x + 1, y - 1)].is_bomb_) bombs++;
 
-      return bombs;
+    return bombs;
   }
 };
 
