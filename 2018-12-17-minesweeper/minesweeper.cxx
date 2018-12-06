@@ -90,13 +90,13 @@ class minesweeper
     }
 
     cell *cells_;
-    int height_, width_;
+    int height_, width_, bombs_count_;
     istream& in_;
     ostream& out_;
 public:
 
   minesweeper(int width, int height, const vector<point>& bombs, istream& in, ostream& out) :
-    height_(height), width_(width), in_(in), out_(out)
+    height_(height), width_(width), bombs_count_(bombs.size()), in_(in), out_(out)
   {
       cells_ = new cell[height * width];
 
@@ -124,11 +124,23 @@ public:
     in_ >> command >> x >> delim >> y;
 
     if (command == "click")
-      click_cell(x, y)
+      click_cell(x, y);
     if (command == "hint")
       hint_cell(x, y);
     if (command == "flag")
       flag_cell(x, y);
+
+
+    switch (check_board()) {
+      case -1:
+        cout << "game over" << endl;
+        open_cells();
+        break;
+      case 1:
+        cout << "game win" << endl;
+        open_cells();
+        break;
+    }
 
     print_board();
     cout << "> ";
@@ -136,11 +148,7 @@ public:
 
   void click_cell(int x, int y)
   {
-    if (cells_[index(x, y)].click())
-    {
-      cout << "game over" << endl;
-      open_board();
-    }
+    cells_[index(x, y)].click();
   }
 
   void hint_cell(int x, int y) const
@@ -154,6 +162,31 @@ public:
   void flag_cell(int x, int y)
   {
     cells_[index(x, y)].flag();
+  }
+
+  char check_board()
+  {
+    int opened_cells = 0;
+
+    for (int i = 0; i < height_ * width_; i++) {
+        // Check for lose
+        if (cells_[i].is_bomb_ && cells_[i].opened_)
+          return -1;
+        if (cells_[i].opened_)
+          opened_cells++;
+    }
+
+    // Check for win
+    if (opened_cells == width_ * height_ - bombs_count_)
+      return 1;
+
+    return 0;
+  }
+
+  void open_cells()
+  {
+    for (int i = 0; i < height_ * width_; ++i)
+      cells_[i].opened_ = true;
   }
 
   void print_board() const
