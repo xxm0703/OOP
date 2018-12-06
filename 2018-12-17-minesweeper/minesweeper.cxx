@@ -119,36 +119,42 @@ public:
     string command;
     char delim;
     int x, y;
+    while (true)
+    {
+      print_board();
+      cout << "> ";
 
-    // No need to check input cause it is guaranteed to be valid
-    in_ >> command >> x >> delim >> y;
+      // No need to check input cause it is guaranteed to be valid
+      in_ >> command >> x >> delim >> y;
 
-    if (command == "click")
+      if (command == "click")
       click_cell(x, y);
-    if (command == "hint")
+      if (command == "hint")
       hint_cell(x, y);
-    if (command == "flag")
+      if (command == "flag")
       flag_cell(x, y);
 
+      char board_state = check_board();
+      if (!board_state) {
 
-    switch (check_board()) {
-      case -1:
+        if (board_state == -1)
         cout << "game over" << endl;
-        open_cells();
-        break;
-      case 1:
+        else if (board_state == 1)
         cout << "game win" << endl;
-        open_cells();
-        break;
-    }
 
-    print_board();
-    cout << "> ";
+        open_cells();
+        return;
+      }
+    }
   }
 
   void click_cell(int x, int y)
   {
-    cells_[index(x, y)].click();
+    cell tmp = cells_[index(x, y)];
+    tmp.click();
+    // if not a bomb and has 0 bomb neighbors, spread
+    if (!tmp.is_bomb_ && !check_neighbors(x, y))
+      spread(x, y);
   }
 
   void hint_cell(int x, int y) const
@@ -273,10 +279,6 @@ int main() {
     bombs.push_back(p);
   }
   minesweeper game(width, height, bombs, cin, cout);
-  game.print_board();
-  game.spread(0,0);
-  cout << endl << endl;
-  game.print_board();
   game.run();
   return 0;
 }
