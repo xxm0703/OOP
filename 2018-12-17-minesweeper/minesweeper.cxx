@@ -70,11 +70,15 @@ class minesweeper
             return is_bomb_;
         }
 
-        bool click()  // Returns is it bomb or not and sets it opened
+        bool click()  // Returns if bomb is opened
         {
-            if (has_flag_) has_flag_ = false;
-            else opened_ = true;
+            if (has_flag_)
+            {
+              has_flag_ = false;
+              return false;
+            }
 
+            opened_ = true;
             return is_bomb_;
         }
 
@@ -121,6 +125,16 @@ public:
   void run()
   {
 
+  }
+
+  bool click_cell(int x, int y)
+  {
+    return cells_[index(x, y)].click();
+  }
+
+  bool hint_cell(int x, int y)
+  {
+    return cells_[index(x, y)].hint();
   }
 
   void spread(int x, int y)
