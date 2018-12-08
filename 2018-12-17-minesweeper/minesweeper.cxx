@@ -83,12 +83,6 @@ class minesweeper
         }
     };
 
-    // Converts
-    long index (int x, int y) const
-    {
-        return x * height_ + y;
-    }
-
     cell *cells_;
     int height_, width_, bombs_count_;
     istream& in_;
@@ -124,8 +118,9 @@ public:
       print_board();
       cout << "> ";
 
-      // No need to check input cause it is guaranteed to be valid
       in_ >> command >> y >> delim >> x;
+      // check input in case it was invalid
+      if (cin.fail()) return;
 
       if (command == "click")
         click_cell(x, y);
@@ -134,7 +129,7 @@ public:
       if (command == "flag")
         flag_cell(x, y);
 
-      char board_state = check_board();
+      int8_t board_state = check_board();
       if (board_state) {
 
         if (board_state == -1)
@@ -149,11 +144,13 @@ public:
     }
   }
 
+private:
+
   void click_cell(int x, int y)
   {
     cell& tmp = cells_[index(x, y)];
 
-    // if not a bomb and has 0 bomb neighbors, spread
+    // if not a bomb and has no bomb neighbors, spread
     if (!tmp.is_bomb_ && !check_neighbors(x, y))
       spread(x, y);
     else
@@ -173,7 +170,7 @@ public:
     cells_[index(x, y)].flag();
   }
 
-  char check_board()
+  char check_board() const
   {
     int opened_cells = 0;
 
@@ -195,7 +192,10 @@ public:
   void open_cells()
   {
     for (int i = 0; i < height_ * width_; ++i)
-      cells_[i].opened_ = true;
+    {
+        cells_[i].has_flag_ = false;
+        cells_[i].opened_ = true;
+    }
   }
 
   void print_board() const
@@ -208,7 +208,7 @@ public:
     }
   }
 
-  static char represent_cell(const cell& c, short bomb_neighbors)
+  static char represent_cell(const cell& c, uint8_t bomb_neighbors)
   {
     // return (has_flag_ ? '!' : (!opened_ ? '_' : (is_bomb_ ? '*' : bomb_neighbors)));
     if (c.has_flag_) return '!';
@@ -240,9 +240,9 @@ public:
 
   }
 
-  short check_neighbors(int x, int y) const
+  uint8_t check_neighbors(int x, int y) const
   {
-    short bombs = 0;
+    uint8_t bombs = 0;
     if (x > 0 && cells_[index(x - 1, y)].is_bomb_) bombs++;
     if (x < width_ - 1 && cells_[index(x + 1, y)].is_bomb_) bombs++;
 
@@ -256,6 +256,12 @@ public:
     if (x < width_ - 1 && y > 0 && cells_[index(x + 1, y - 1)].is_bomb_) bombs++;
 
     return bombs;
+  }
+
+  // Converts
+  long index (int x, int y) const
+  {
+      return x * height_ + y;
   }
 };
 
