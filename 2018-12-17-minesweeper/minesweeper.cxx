@@ -86,7 +86,7 @@ class minesweeper
     // Converts
     long index (int x, int y) const
     {
-        return x + y * width_;
+        return x * height_ + y;
     }
 
     cell *cells_;
@@ -103,7 +103,7 @@ public:
       // Setting the bombs
       for (vector<point>::const_iterator it = bombs.begin(); it != bombs.end(); ++it)
       {
-          long i = index((*it).get_x(), (*it).get_y());
+          long i = index((*it).get_y(), (*it).get_x());
           cells_[i].is_bomb_ = true;
       }
 
@@ -119,23 +119,23 @@ public:
     string command;
     char delim;
     int x, y;
-    while (true)
+    while (!cin.eof())
     {
       print_board();
       cout << "> ";
 
       // No need to check input cause it is guaranteed to be valid
-      in_ >> command >> x >> delim >> y;
+      in_ >> command >> y >> delim >> x;
 
       if (command == "click")
-      click_cell(x, y);
+        click_cell(x, y);
       if (command == "hint")
-      hint_cell(x, y);
+        hint_cell(x, y);
       if (command == "flag")
-      flag_cell(x, y);
+        flag_cell(x, y);
 
       char board_state = check_board();
-      if (!board_state) {
+      if (board_state) {
 
         if (board_state == -1)
         cout << "game over" << endl;
@@ -143,6 +143,7 @@ public:
         cout << "game win" << endl;
 
         open_cells();
+        print_board();
         return;
       }
     }
@@ -150,11 +151,13 @@ public:
 
   void click_cell(int x, int y)
   {
-    cell tmp = cells_[index(x, y)];
-    tmp.click();
+    cell& tmp = cells_[index(x, y)];
+
     // if not a bomb and has 0 bomb neighbors, spread
     if (!tmp.is_bomb_ && !check_neighbors(x, y))
       spread(x, y);
+    else
+      tmp.click();
   }
 
   void hint_cell(int x, int y) const
