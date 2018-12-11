@@ -220,23 +220,23 @@ public:
   // Recursivly opens cells
   void spread(int x, int y)
   {
-    if (cells_[index(x, y)].opened_) return;
+    if (x < 0 || x >= width_ || y < 0 || y >= height_ || cells_[index(x, y)].opened_) return;
 
     cells_[index(x, y)].opened_ = true;
 
     if (check_neighbors(x, y)) return;
 
-    if (x > 0) spread(x - 1, y);
-    if (x < width_ - 1) spread(x + 1, y);
+    spread(x - 1, y);
+    spread(x + 1, y);
 
-    if (y > 0) spread(x, y - 1);
-    if (y < height_ - 1) spread(x, y + 1);
+    spread(x, y - 1);
+    spread(x, y + 1);
 
-    if (x > 0 && y > 0) spread(x - 1, y - 1);
-    if (x < width_ - 1 && y < height_ - 1) spread(x + 1, y + 1);
+    spread(x - 1, y - 1);
+    spread(x + 1, y + 1);
 
-    if (x > 0 && y < height_ - 1) spread(x - 1, y + 1);
-    if (x < width_ - 1 && y > 0) spread(x + 1, y - 1);
+    spread(x - 1, y + 1);
+    spread(x + 1, y - 1);
 
   }
 
