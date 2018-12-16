@@ -81,6 +81,15 @@ class minesweeper
             opened_ = true;
             return is_bomb_;
         }
+
+        char represent(uint8_t bomb_neighbors)
+        {
+          // return (has_flag_ ? '!' : (!opened_ ? '_' : (is_bomb_ ? '*' : bomb_neighbors)));
+          if (has_flag_) return '!';
+          if (!opened_) return '_';
+          if (is_bomb_) return '*';
+          return '0' + bomb_neighbors;
+        }
     };
 
     cell *cells_;
@@ -203,18 +212,12 @@ private:
     for (int y = 0; y < height_; ++y)
     {
       for (int x = 0; x < width_; ++x)
-        out_ << represent_cell(cells_[index(x, y)], check_neighbors(x, y));
+      {
+        uint8_t neighbors = check_neighbors(x, y);
+        out_ << cells_[index(x, y)].represent(neighbors);
+      }
       out_ << endl;
     }
-  }
-
-  static char represent_cell(const cell& c, uint8_t bomb_neighbors)
-  {
-    // return (has_flag_ ? '!' : (!opened_ ? '_' : (is_bomb_ ? '*' : bomb_neighbors)));
-    if (c.has_flag_) return '!';
-    if (!c.opened_) return '_';
-    if (c.is_bomb_) return '*';
-    return '0' + bomb_neighbors;
   }
 
   // Recursivly opens cells
