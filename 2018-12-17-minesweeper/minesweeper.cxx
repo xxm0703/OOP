@@ -65,12 +65,14 @@ class minesweeper
                 has_flag_ = !has_flag_;
         }
 
-        bool hint() const  // Returns is it bomb or not
+        // Returns is it bomb or not
+        bool hint() const
         {
             return is_bomb_;
         }
 
-        bool click()  // Returns if bomb is opened
+        // Returns if bomb is opened
+        bool click()
         {
             if (has_flag_)
             {
@@ -82,6 +84,7 @@ class minesweeper
             return is_bomb_;
         }
 
+        // Gets bomb neighbors as argumet and represents it
         char represent(uint8_t bomb_neighbors)
         {
           // return (has_flag_ ? '!' : (!opened_ ? '_' : (is_bomb_ ? '*' : bomb_neighbors)));
@@ -120,25 +123,26 @@ public:
   void run()
   {
     string command;
-    char delim;
-    int x, y;
+    point coord;
     while (true)
     {
       print_board();
       cout << "> ";
 
-      in_ >> command >> y >> delim >> x;
-      // check input in case it was invalid
-      if (cin.fail()) return;
+      in_ >> command >> coord;
+      // check input in case it ended
+      if (cin.bad()) return;
 
       if (command == "click")
-        click_cell(x, y);
+        // cause coordinates are given in wrong order
+        click_cell(coord.get_y(), coord.get_x());
       if (command == "hint")
-        hint_cell(x, y);
+        hint_cell(coord.get_y(), coord.get_x());
       if (command == "flag")
-        flag_cell(x, y);
+        flag_cell(coord.get_y(), coord.get_x());
 
       int8_t board_state = check_board();
+      // If any end game condition occurred
       if (board_state) {
 
         if (board_state == -1)
@@ -168,7 +172,7 @@ private:
 
   void hint_cell(int x, int y) const
   {
-    // Just for fun
+    // Is it so bad?!
     if (!cells_[index(x, y)].hint())
       out_ << "not a ";
     out_ << "bomb" << endl;
@@ -184,20 +188,21 @@ private:
     int opened_cells = 0;
 
     for (int i = 0; i < height_ * width_; i++) {
-        // Check for lose
+        // Check lose condition
         if (cells_[i].is_bomb_ && cells_[i].opened_)
           return -1;
         if (cells_[i].opened_)
           opened_cells++;
     }
 
-    // Check for win
+    // Check win condition
     if (opened_cells == width_ * height_ - bombs_count_)
       return 1;
 
     return 0;
   }
 
+  // Opens the whole board
   void open_cells()
   {
     for (int i = 0; i < height_ * width_; ++i)
@@ -223,10 +228,12 @@ private:
   // Recursivly opens cells
   void spread(int x, int y)
   {
+    // recursion bottom
     if (x < 0 || x >= width_ || y < 0 || y >= height_ || cells_[index(x, y)].opened_) return;
 
     cells_[index(x, y)].opened_ = true;
 
+    // other recursion bottom
     if (check_neighbors(x, y)) return;
 
     spread(x - 1, y);
@@ -261,7 +268,7 @@ private:
     return bombs;
   }
 
-  // Converts
+  // Converts matrix coordinates to linear distance
   long index (int x, int y) const
   {
       return x * height_ + y;
