@@ -113,7 +113,7 @@ public:
     string command;
     char delim;
     int x, y;
-    while (!cin.eof())
+    while (true)
     {
       print_board();
       cout << "> ";
