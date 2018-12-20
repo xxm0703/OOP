@@ -91,21 +91,19 @@ class minesweeper
           if (has_flag_) return '!';
           if (!opened_) return '_';
           if (is_bomb_) return '*';
-          return '0' + bomb_neighbors;
+          return '0' + bomb_neighbors;  // converts digit to char
         }
     };
 
-    cell *cells_;
-    int height_, width_, bombs_count_;
+    const int height_, width_, bombs_count_;
     istream& in_;
     ostream& out_;
+    cell *cells_;
 public:
 
   minesweeper(int width, int height, const vector<point>& bombs, istream& in, ostream& out) :
-    height_(height), width_(width), bombs_count_(bombs.size()), in_(in), out_(out)
+    height_(height), width_(width), bombs_count_(bombs.size()), in_(in), out_(out), cells_(new cell[height * width])
   {
-      cells_ = new cell[height * width];
-
       // Setting the bombs
       for (vector<point>::const_iterator it = bombs.begin(); it != bombs.end(); ++it)
       {
