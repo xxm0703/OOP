@@ -1,11 +1,48 @@
+#include<iostream>
 #include<cstdint>
 #include<algorithm>
 
-bool check_position(bool **, uint8_t, uint8_t);
+void solve_board(uint8_t);
+bool place_queens(bool **, uint8_t, uint8_t level=0);
+bool check_position(bool **, uint8_t, uint8_t, uint8_t);
 
 int main(int argc, char const *argv[]) {
-	/* code */
+	solve_board(4);
 	return 0;
+}
+
+void solve_board(uint8_t board_side)
+{
+    if (board_side < 4)
+        return;
+
+    bool **board = new bool*[board_side];
+    for (uint8_t i = 0; i < board_side; ++i)
+        board[i] = new bool[board_side];
+
+    place_queens(board, board_side);
+}
+
+bool place_queens(bool **board, uint8_t board_side, uint8_t level)
+{
+    if (level == board_side)
+    {
+        std::cout << "Correct\n";
+        return true;
+    }
+    for (int i = 0; i < board_side; ++i)
+    {
+
+        if(check_position(board, level, i, board_side))
+        {
+            std::cout << i << ' ';
+            board[level][i] = true;
+            place_queens(board, board_side, level + 1);
+            board[level][i] = false;
+        }
+        // std::cout << "Probe" << (int)i << (int)level << std::endl;
+    }
+    return false;
 }
 
 bool check_position(bool **board, uint8_t x, uint8_t y, uint8_t size)
@@ -18,9 +55,9 @@ bool check_position(bool **board, uint8_t x, uint8_t y, uint8_t size)
 	}
 
     // Decending diagonal
-    uint8_t minimal = std::min(x, y);
-    uint8_t tmp_x = x - minimal, tmp_y = y - minimal;
-    while(tmp_x < size and tmp_y < size)
+    int16_t minimal = std::min(x, y);
+    int16_t tmp_x = x - minimal, tmp_y = y - minimal;
+    while(tmp_x < size && tmp_y < size)
     {
         if(board[tmp_x][tmp_y])
             return false;
@@ -30,10 +67,10 @@ bool check_position(bool **board, uint8_t x, uint8_t y, uint8_t size)
     }
 
     // Ascending diagonal
-    minimal = std::min((uint8_t)(size - x), y);
+    minimal = std::min((uint8_t)(size - x - 1), y);
     tmp_x = x + minimal;
     tmp_y = y - minimal;
-    while(tmp_x >= 0 and tmp_y < size)
+    while(tmp_x >= 0 && tmp_y < size)
     {
         if(board[tmp_x][tmp_y])
             return false;
