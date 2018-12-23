@@ -11,9 +11,7 @@ public:
 	{
 		for (uint16_t i = 0; i < size_; ++i)
 		{
-			bool *tmp = new bool[size_];
-			std::fill(tmp, tmp + size_, false);
-			cells_[i] = tmp;
+			cells_[i] = new bool[size_];
 		}
 	}
 
