@@ -3,7 +3,8 @@
 #include<algorithm>
 
 void solve_board(uint8_t);
-bool place_queens(bool **, uint8_t, uint8_t level=0);
+void place_queens(bool **, uint8_t, uint8_t level=0);
+void print_solution(uint8_t *, uint8_t);
 bool check_position(bool **, uint8_t, uint8_t, uint8_t);
 
 int main(int argc, char const *argv[]) {
@@ -21,14 +22,17 @@ void solve_board(uint8_t board_side)
         board[i] = new bool[board_side];
 
     place_queens(board, board_side);
+    for (uint8_t i = 0; i < board_side; ++i)
+        delete [] board[i];
+    delete [] board;
 }
 
-bool place_queens(bool **board, uint8_t board_side, uint8_t level)
+void place_queens(bool **board, uint8_t board_side, uint8_t level)
 {
     if (level == board_side)
     {
         std::cout << "Correct\n";
-        return true;
+        return;
     }
     for (int i = 0; i < board_side; ++i)
     {
@@ -42,8 +46,10 @@ bool place_queens(bool **board, uint8_t board_side, uint8_t level)
         }
         // std::cout << "Probe" << (int)i << (int)level << std::endl;
     }
-    return false;
+    return;
 }
+
+
 
 bool check_position(bool **board, uint8_t x, uint8_t y, uint8_t size)
 {
