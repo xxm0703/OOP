@@ -3,12 +3,12 @@
 #include<algorithm>
 
 void solve_board(uint8_t);
-void place_queens(bool **, uint8_t, uint8_t level=0);
+void place_queens(bool **, uint8_t, uint8_t *, uint8_t level=0);
 void print_solution(uint8_t *, uint8_t);
 bool check_position(bool **, uint8_t, uint8_t, uint8_t);
 
 int main(int argc, char const *argv[]) {
-	solve_board(4);
+	solve_board(atoi(argv[1]));
 	return 0;
 }
 
@@ -18,20 +18,22 @@ void solve_board(uint8_t board_side)
         return;
 
     bool **board = new bool*[board_side];
+    uint8_t *solution_array = new uint8_t[board_side];
     for (uint8_t i = 0; i < board_side; ++i)
         board[i] = new bool[board_side];
 
-    place_queens(board, board_side);
+    place_queens(board, board_side, solution_array);
     for (uint8_t i = 0; i < board_side; ++i)
         delete [] board[i];
     delete [] board;
+    delete [] solution_array;
 }
 
-void place_queens(bool **board, uint8_t board_side, uint8_t level)
+void place_queens(bool **board, uint8_t board_side, uint8_t *solution, uint8_t level)
 {
     if (level == board_side)
     {
-        std::cout << "Correct\n";
+        print_solution(solution, board_side);
         return;
     }
     for (int i = 0; i < board_side; ++i)
@@ -39,17 +41,21 @@ void place_queens(bool **board, uint8_t board_side, uint8_t level)
 
         if(check_position(board, level, i, board_side))
         {
-            std::cout << i << ' ';
+            solution[level] = i;
             board[level][i] = true;
-            place_queens(board, board_side, level + 1);
+            place_queens(board, board_side, solution, level + 1);
             board[level][i] = false;
         }
-        // std::cout << "Probe" << (int)i << (int)level << std::endl;
     }
     return;
 }
 
-
+void print_solution(uint8_t *positions, uint8_t size)
+{
+    for(uint8_t i = 0; i < size; ++i)
+        std::cout << (int)(positions[i]) << ' ';
+    std::cout << std::endl;
+}
 
 bool check_position(bool **board, uint8_t x, uint8_t y, uint8_t size)
 {
