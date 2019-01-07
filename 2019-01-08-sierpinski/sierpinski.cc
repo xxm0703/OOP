@@ -142,6 +142,5 @@ int main() {
 	Sierpinski h(t);
 	h.draw_base(3);
 
-
 	return 0;
 }
