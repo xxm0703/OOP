@@ -1,19 +1,51 @@
 #include<iostream>
 #include<cstdint>
 #include<algorithm>
+#include"turtle.cxx"
+
+void draw_solution(uint8_t *solution_array, size_t side);
+
+class Graphics
+{
+	PSTurtle turtle_;
+	const short side_;
+	int current_y;
+
+public:
+	Graphics() :
+		turtle_(PSTurtle(600, 2000)), side_(5), current_y(0)
+		{
+			turtle_.setup().moveto(Point(0, 0));
+		}
+
+	void draw_solution(uint8_t *solution_array, size_t size)
+	{
+		int current_x = turtle_.get_pos().get_x();
+
+		if (current_x + side_ * size >= turtle_.get_width())
+		{
+			current_x = 0;
+			current_y += side_ * (size + 1);
+		}
+
+		for(uint8_t i = 0; i < size; ++i)
+		{
+				current_x += side_;
+				turtle_.moveto(Point(current_x , current_y + solution_array[i] * side_));
+				turtle_.pendown();
+		}
+
+		turtle_.penup();
+		turtle_.moveto(Point(turtle_.get_pos().get_x() + side_ , current_y));
+	}
+};
 
 class NQueens
 {
 	uint8_t side_;
 	uint8_t *solution_array_;
 	bool **board_;
-
-	void print_solution()
-	{
-	    for(uint8_t i = 0; i < side_; ++i)
-	        std::cout << (int)(solution_array_[i]) << ' ';
-	    std::cout << std::endl;
-	}
+	Graphics drawer_;
 
 	bool check_position(uint8_t x, uint8_t y)
 	{
@@ -54,7 +86,8 @@ class NQueens
 public:
 
 	NQueens(uint8_t board_side)
-	: side_(board_side), solution_array_(new uint8_t[board_side]), board_(new bool*[board_side])
+	: side_(board_side), solution_array_(new uint8_t[board_side]),
+	board_(new bool*[board_side]), drawer_(Graphics())
 	{
 	    for (uint8_t i = 0; i < side_; ++i)
 	        board_[i] = new bool[side_];
@@ -73,7 +106,7 @@ public:
 	{
 	    if (level == side_)
 	    {
-	        print_solution();
+					drawer_.draw_solution(solution_array_, side_);
 	        return;
 	    }
 
