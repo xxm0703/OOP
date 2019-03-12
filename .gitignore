@@ -1,4 +1,3 @@
 *.out
 *.swp
-*/.idea/*
-*/workspace.xml
+**/.idea/**
