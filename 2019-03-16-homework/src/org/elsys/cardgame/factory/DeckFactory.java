@@ -3,38 +3,41 @@ package org.elsys.cardgame.factory;
 import org.elsys.cardgame.api.*;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 public class DeckFactory {
 
+//    public static void main(String[] args);
+
 	public static Deck defaultWarDeck() {
-		ArrayList<Card> cards = new ArrayList<>();
-		for(Suit s: Suit.values()) {
-			for (Rank r : Rank.values()) {
-				cards.add(new CardImpl(r, s));
-			}
-		}
+		ArrayList<Card> cards = generateCards(Rank.TWO);
 
-		class warComparator implements Comparator<Card> {
-			@Override
-			public int compare(Card o1, Card o2) {
-				if (o1.getSuit().ordinal() != o2.getSuit().ordinal())
-					return o2.getSuit().ordinal() - o1.getSuit().ordinal();
-				return o2.getRank().ordinal() - o1.getRank().ordinal();
-			}
-		}
-
-		return new DeckImpl(cards, 26, new warComparator());
+		return new DeckImpl(cards, 26, new WarComparator());
 	}
 
 	public static Deck defaultSantaseDeck() {
-		// TODO
-		return null;
+        ArrayList<Card> cards = generateCards(Rank.NINE);
+
+        return new DeckImpl(cards, 6, new NoTrumpComparator());
+
 	}
 
 	public static Deck defaultBeloteDeck() {
-		// TODO
-		return null;
+        ArrayList<Card> cards = generateCards(Rank.SEVEN);
+
+        return new DeckImpl(cards, 8, new NoTrumpComparator());
 	}
+
+	private static ArrayList<Card> generateCards(Rank startRank) {
+        ArrayList<Card> cards = new ArrayList<>();
+
+        for(Suit s: Suit.values()) {
+            for (Rank r : Rank.values()) {
+                if (r.ordinal() >= startRank.ordinal()) {
+                    cards.add(new CardImpl(r, s));
+                }
+            }
+        }
+
+        return cards;
+    }
 }
