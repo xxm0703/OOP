@@ -1,6 +1,6 @@
 package org.elsys.cardgame.api;
 
-public class CardImpl implements Card, Comparable {
+public class CardImpl implements Card {
 
     private Rank rank;
     private Suit suit;
@@ -20,11 +20,4 @@ public class CardImpl implements Card, Comparable {
         return rank;
     }
 
-    @Override
-    public int compareTo(Object o) {
-        Card other = (Card) o;
-        if(rank == other.getRank())
-            
-        return 0;
-    }
 }
