@@ -7,12 +7,12 @@ import java.util.List;
 
 public class DeckImpl implements Deck {
 
-    private ArrayList<Card> cards;
+    private List<Card> cards;
     private Comparator<Card> comparator;
     private int deckSize;
     private int handSize;
 
-    public DeckImpl(ArrayList<Card> cards, int handSize, Comparator comparator) {
+    public DeckImpl(List<Card> cards, int handSize, Comparator<Card> comparator) {
         this.cards = cards;
         deckSize = cards.size();
         this.handSize = handSize;
@@ -36,9 +36,7 @@ public class DeckImpl implements Deck {
 
     @Override
     public Card drawTopCard() {
-        Card tmp = cards.get(0);
-        cards.remove(0);
-        return tmp;
+        return popRange(1).get(0);
     }
 
     @Override
@@ -48,8 +46,9 @@ public class DeckImpl implements Deck {
 
     @Override
     public Card drawBottomCard() {
-        Card tmp = cards.get(deckSize - 1);
-        cards.remove(deckSize - 1);
+        Collections.reverse(cards);
+        Card tmp = drawTopCard();
+        Collections.reverse(cards);
         return tmp;
     }
 
@@ -60,7 +59,7 @@ public class DeckImpl implements Deck {
 
     @Override
     public Hand deal() {
-        return new HandImpl(cards.subList(0, handSize));
+        return new HandImpl(popRange(handSize), handSize);
     }
 
     @Override
@@ -70,6 +69,19 @@ public class DeckImpl implements Deck {
 
     @Override
     public void shuffle() {
-
+        Collections.shuffle(cards);
     }
+
+    private List<Card> popRange(int endIndex) {
+        List<Card> tmp = new ArrayList<>(cards.subList(0, endIndex));
+        cards.removeAll(tmp);
+        deckSize = cards.size();
+        return tmp;
+    }
+//    private List popRange(int startIndex, int endIndex) {
+//        List tmp = cards.subList(startIndex, endIndex);
+//        cards.removeAll(tmp);
+//        deckSize = cards.size();
+//        return tmp;
+//    }
 }

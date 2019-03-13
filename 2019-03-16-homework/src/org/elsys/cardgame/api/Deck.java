@@ -4,24 +4,24 @@ import java.util.List;
 
 public interface Deck {
 
-	List<Card> getCards();
+    List<Card> getCards();
 
-	int size();
+    int size();
 
-	int handSize();
+    int handSize();
 
-	Card drawTopCard();
+    Card drawTopCard();
 
-	Card topCard();
+    Card topCard();
 
-	Card drawBottomCard();
+    Card drawBottomCard();
 
-	Card bottomCard();
+    Card bottomCard();
 
-	Hand deal();
+    Hand deal();
 
-	void sort();
-	
-	void shuffle();
+    void sort();
+
+    void shuffle();
 
 }

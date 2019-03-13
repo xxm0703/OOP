@@ -2,7 +2,7 @@ package org.elsys.cardgame.api;
 
 public interface Card {
 
-	Suit getSuit();
+    Suit getSuit();
 
-	Rank getRank();
+    Rank getRank();
 }

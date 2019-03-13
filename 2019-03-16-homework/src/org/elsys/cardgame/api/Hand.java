@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Hand {
 
-	List<Card> getCards();
+    List<Card> getCards();
 
-	int size();
+    int size();
 }

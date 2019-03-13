@@ -20,4 +20,21 @@ public class CardImpl implements Card {
         return rank;
     }
 
+    @Override
+    public String toString() {
+        return "CardImpl{" +
+                "rank=" + rank +
+                ", suit=" + suit +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CardImpl card = (CardImpl) o;
+        return rank == card.rank &&
+                suit == card.suit;
+    }
+
 }

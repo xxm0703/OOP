@@ -4,19 +4,21 @@ import java.util.List;
 
 public class HandImpl implements Hand {
 
-    List<Card> cards;
+    private List<Card> cards;
+    private int size;
 
-    HandImpl(List<Card> cards) {
+    HandImpl(List<Card> cards, int size) {
         this.cards = cards;
+        this.size = size;
     }
 
     @Override
     public List<Card> getCards() {
-        return null;
+        return cards;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 }
