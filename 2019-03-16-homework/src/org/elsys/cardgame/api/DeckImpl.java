@@ -78,10 +78,4 @@ public class DeckImpl implements Deck {
         deckSize = cards.size();
         return tmp;
     }
-//    private List popRange(int startIndex, int endIndex) {
-//        List tmp = cards.subList(startIndex, endIndex);
-//        cards.removeAll(tmp);
-//        deckSize = cards.size();
-//        return tmp;
-//    }
 }
