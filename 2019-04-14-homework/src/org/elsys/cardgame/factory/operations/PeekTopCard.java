@@ -3,9 +3,9 @@ package org.elsys.cardgame.factory.operations;
 import org.elsys.cardgame.api.Deck;
 import org.elsys.cardgame.api.Game;
 
-public class PeekCard extends AbstractOperation {
+public class PeekTopCard extends AbstractOperation {
 
-    public PeekCard(final String name, final Game game) {
+    public PeekTopCard(final String name, final Game game) {
         super(name, game);
     }
 
