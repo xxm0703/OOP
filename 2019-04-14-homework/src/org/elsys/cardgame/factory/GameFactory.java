@@ -14,7 +14,7 @@ public class GameFactory {
         final Deck defaultWarDeck = DeckFactory.defaultWarDeck();
 
         if (cards.containsAll(defaultWarDeck.getCards())) {
-            final GameImpl game = new GameImpl(defaultWarDeck, null);
+            final GameImpl game = new GameImpl(defaultWarDeck);
             loadBasicOperations(game);
             return game;
         }
@@ -25,7 +25,7 @@ public class GameFactory {
         final Deck defaultSantaseDeck = DeckFactory.defaultSantaseDeck();
 
         if (cards.containsAll(defaultSantaseDeck.getCards())) {
-            final GameImpl game = new GameImpl(defaultSantaseDeck, null);
+            final GameImpl game = new GameImpl(defaultSantaseDeck);
             loadBasicOperations(game);
             return game;
         }
@@ -36,7 +36,7 @@ public class GameFactory {
         final Deck defaultBeloteDeck = DeckFactory.defaultBeloteDeck();
 
         if (cards.containsAll(defaultBeloteDeck.getCards())) {
-            final GameImpl game = new GameImpl(defaultBeloteDeck, null);
+            final GameImpl game = new GameImpl(defaultBeloteDeck);
             loadBasicOperations(game);
             return game;
         }
