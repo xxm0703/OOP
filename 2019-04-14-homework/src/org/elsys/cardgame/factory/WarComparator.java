@@ -4,7 +4,7 @@ import org.elsys.cardgame.api.Card;
 
 import java.util.Comparator;
 
-public class WarComparator implements Comparator<Card> {
+class WarComparator implements Comparator<Card> {
     @Override
     public int compare(Card o1, Card o2) {
         if (o1.getSuit().ordinal() != o2.getSuit().ordinal())

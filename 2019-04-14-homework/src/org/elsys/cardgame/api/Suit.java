@@ -7,7 +7,7 @@ public enum Suit {
     HEARTS("H"),
     SPADES("S");
 
-    private String symbol;
+    final private String symbol;
 
     Suit(String symbol) {
         this.symbol = symbol;

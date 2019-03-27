@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.elsys.cardgame.api.Rank.*;
 
-public class NoTrumpComparator implements Comparator<Card> {
+class NoTrumpComparator implements Comparator<Card> {
     private final List<Rank> order = Arrays.asList(SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE);
 
     @Override

@@ -16,7 +16,7 @@ public enum Rank {
     KING("K"),
     ACE("A");
 
-    private String symbol;
+    final private String symbol;
 
     Rank(String symbol) {
         this.symbol = symbol;

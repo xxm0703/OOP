@@ -12,9 +12,9 @@ import java.util.List;
 public class DeckImpl implements Deck {
 
     private List<Card> cards;
-    private Comparator<Card> comparator;
+    final private Comparator<Card> comparator;
     private int deckSize;
-    private int handSize;
+    final private int handSize;
 
     DeckImpl(List<Card> cards, int handSize, Comparator<Card> comparator) {
         this.cards = cards;

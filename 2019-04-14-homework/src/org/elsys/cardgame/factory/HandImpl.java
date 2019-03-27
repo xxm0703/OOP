@@ -8,7 +8,7 @@ import java.util.List;
 public class HandImpl implements Hand {
 
     private List<Card> cards;
-    private int size;
+    final private int size;
 
     HandImpl(List<Card> cards, int size) {
         this.cards = cards;

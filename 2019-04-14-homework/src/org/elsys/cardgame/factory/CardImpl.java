@@ -6,8 +6,8 @@ import org.elsys.cardgame.api.Suit;
 
 public class CardImpl implements Card {
 
-    private Rank rank;
-    private Suit suit;
+    final private Rank rank;
+    final private Suit suit;
 
     CardImpl(Rank rank, Suit suit) {
         this.rank = rank;
