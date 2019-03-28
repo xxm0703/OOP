@@ -1,6 +1,7 @@
 package org.elsys.cardgame.factory;
 
 import org.elsys.cardgame.api.Card;
+import org.elsys.cardgame.api.CardException;
 import org.elsys.cardgame.api.Deck;
 import org.elsys.cardgame.api.Hand;
 
@@ -87,6 +88,10 @@ public class DeckImpl implements Deck {
     }
 
     private List<Card> popRange(int endIndex) {
+        if (cards.size() < endIndex) {
+            throw new CardException("ERROR: Not enough cards in deck");
+        }
+
         List<Card> tmp = new ArrayList<>(cards.subList(0, endIndex));
         cards.removeAll(tmp);
         deckSize = cards.size();
