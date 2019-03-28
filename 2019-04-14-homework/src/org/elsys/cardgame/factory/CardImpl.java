@@ -9,7 +9,7 @@ public class CardImpl implements Card {
     final private Rank rank;
     final private Suit suit;
 
-    CardImpl(Rank rank, Suit suit) {
+    public CardImpl(Rank rank, Suit suit) {
         this.rank = rank;
         this.suit = suit;
     }
