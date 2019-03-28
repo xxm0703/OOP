@@ -6,41 +6,30 @@ import org.elsys.cardgame.api.Deck;
 import org.elsys.cardgame.api.Game;
 import org.elsys.cardgame.factory.operations.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class GameFactory {
 
     public static Game createWarGame(List<Card> cards) {
-        final Deck defaultWarDeck = DeckFactory.defaultWarDeck();
+        WarComparator comparator = new WarComparator();
+        Deck warDeck = DeckFactory.defaultWarDeck();
 
-        if (cards.containsAll(defaultWarDeck.getCards())) {
-            final GameImpl game = new GameImpl(defaultWarDeck);
-            loadBasicOperations(game);
-            return game;
-        }
-        throw new CardException("ERROR: Not enough cards for War");
+        return composeGameObj(cards, warDeck, comparator);
     }
 
     public static Game createSantaseGame(List<Card> cards) {
-        final Deck defaultSantaseDeck = DeckFactory.defaultSantaseDeck();
+        NoTrumpComparator comparator = new NoTrumpComparator();
+        Deck santaseDeck = DeckFactory.defaultSantaseDeck();
 
-        if (cards.containsAll(defaultSantaseDeck.getCards())) {
-            final GameImpl game = new GameImpl(defaultSantaseDeck);
-            loadBasicOperations(game);
-            return game;
-        }
-        throw new CardException("ERROR: Not enough cards for Santase");
+        return composeGameObj(cards, santaseDeck, comparator);
     }
 
     public static Game createBeloteGame(List<Card> cards) {
-        final Deck defaultBeloteDeck = DeckFactory.defaultBeloteDeck();
+        NoTrumpComparator comparator = new NoTrumpComparator();
+        Deck beloteDeck = DeckFactory.defaultBeloteDeck();
 
-        if (cards.containsAll(defaultBeloteDeck.getCards())) {
-            final GameImpl game = new GameImpl(defaultBeloteDeck);
-            loadBasicOperations(game);
-            return game;
-        }
-        throw new CardException("ERROR: Not enough cards for Belote");
+        return composeGameObj(cards, beloteDeck, comparator);
     }
 
     private static void loadBasicOperations(final Game game) {
@@ -52,5 +41,30 @@ public class GameFactory {
         game.addOperation(new Shuffle("shuffle", game));
         game.addOperation(new Sort("sort", game));
         game.addOperation(new Deal("deal", game));
+    }
+
+    private static List<Card> filterDeck(List<Card> cards, final List<Card> filter) {
+        for (Card card : cards) {
+            if (!filter.contains(card)) {
+                cards.remove(card);
+            }
+        }
+        return cards;
+    }
+
+    private static Game composeGameObj(List<Card> cards, final Deck defaultDeck, Comparator<Card> cmp) {
+        List<Card> defaultCards = defaultDeck.getCards();
+
+        if (cards.containsAll(defaultCards)) {
+
+            List<Card> filteredCards = filterDeck(cards, defaultCards);
+            Deck newDeck = new DeckImpl(filteredCards, defaultDeck.handSize(), cmp);
+
+            GameImpl game = new GameImpl(newDeck);
+
+            loadBasicOperations(game);
+            return game;
+        }
+        throw new CardException("ERROR: Not enough cards for Belote");
     }
 }

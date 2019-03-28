@@ -26,7 +26,7 @@ public class CardImpl implements Card {
 
     @Override
     public String toString() {
-        return "" + rank + suit;
+        return "" + suit + rank;
     }
 
     @Override
