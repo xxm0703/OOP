@@ -13,5 +13,6 @@ public class Sort extends AbstractOperation {
     public void execute() {
         final Deck deck = game.getDeck();
         deck.sort();
+        System.out.println(deck);
     }
 }

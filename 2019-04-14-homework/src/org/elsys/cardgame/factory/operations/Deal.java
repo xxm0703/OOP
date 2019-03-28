@@ -2,6 +2,7 @@ package org.elsys.cardgame.factory.operations;
 
 import org.elsys.cardgame.api.Deck;
 import org.elsys.cardgame.api.Game;
+import org.elsys.cardgame.api.Hand;
 
 public class Deal extends AbstractOperation {
 
@@ -12,6 +13,9 @@ public class Deal extends AbstractOperation {
     @Override
     public void execute() {
         final Deck deck = game.getDeck();
-        System.out.println(deck.deal());
+        final Hand hand = deck.deal();
+        game.setDealtHand(hand);
+
+        System.out.println(hand);
     }
 }

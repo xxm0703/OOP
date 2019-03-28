@@ -13,5 +13,6 @@ public class Shuffle extends AbstractOperation {
     public void execute() {
         final Deck deck = game.getDeck();
         deck.shuffle();
+        System.out.println(deck);
     }
 }

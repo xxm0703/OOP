@@ -76,6 +76,16 @@ public class DeckImpl implements Deck {
         Collections.shuffle(cards);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder deckRepresentation = new StringBuilder();
+        for (Card card : cards) {
+            deckRepresentation.append(card).append(" ");
+        }
+
+        return deckRepresentation.toString();
+    }
+
     private List<Card> popRange(int endIndex) {
         List<Card> tmp = new ArrayList<>(cards.subList(0, endIndex));
         cards.removeAll(tmp);
