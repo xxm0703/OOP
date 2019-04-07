@@ -1,5 +1,8 @@
 package org.elsys.cardgame.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum Rank {
 
     TWO("2"),
@@ -17,6 +20,17 @@ public enum Rank {
     ACE("A");
 
     final private String symbol;
+    final static Map<String, Rank> lookup = new HashMap<>();
+
+    static {
+        for (Rank r : Rank.values()) {
+            lookup.put(r.getSymbol(), r);
+        }
+    }
+
+    public static Rank get(String value) {
+        return lookup.get(value);
+    }
 
     Rank(String symbol) {
         this.symbol = symbol;
