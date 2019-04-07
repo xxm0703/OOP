@@ -55,12 +55,15 @@ public class Main {
 
     private static void readCards(final List<Card> cards, Scanner in) {
         String[] line = in.nextLine().split(" ");
-        String[] attributes;
+        String suitStr, rankStr;
+
 
         for (String card : line) {
-            attributes = card.split("");
-            final Suit suit = new Suit(attributes[0]);
-            final Rank rank = new Rank(attributes[1]);
+            suitStr = card.substring(0, 1);
+            rankStr = card.substring(1);
+
+            final Suit suit = Suit.get(suitStr);
+            final Rank rank = Rank.get(rankStr);
             cards.add(new CardImpl(rank, suit));
         }
     }

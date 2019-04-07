@@ -15,21 +15,21 @@ public class GameFactory {
         WarComparator comparator = new WarComparator();
         Deck warDeck = DeckFactory.defaultWarDeck();
 
-        return composeGameObj(cards, warDeck, comparator);
+        return composeGameObj(cards, warDeck, comparator, "War");
     }
 
     public static Game createSantaseGame(List<Card> cards) {
         NoTrumpComparator comparator = new NoTrumpComparator();
         Deck santaseDeck = DeckFactory.defaultSantaseDeck();
 
-        return composeGameObj(cards, santaseDeck, comparator);
+        return composeGameObj(cards, santaseDeck, comparator, "Santase");
     }
 
     public static Game createBeloteGame(List<Card> cards) {
         NoTrumpComparator comparator = new NoTrumpComparator();
         Deck beloteDeck = DeckFactory.defaultBeloteDeck();
 
-        return composeGameObj(cards, beloteDeck, comparator);
+        return composeGameObj(cards, beloteDeck, comparator, "Belote");
     }
 
     private static void loadBasicOperations(final Game game) {
@@ -52,7 +52,7 @@ public class GameFactory {
         return cards;
     }
 
-    private static Game composeGameObj(List<Card> cards, final Deck defaultDeck, Comparator<Card> cmp) {
+    private static Game composeGameObj(List<Card> cards, final Deck defaultDeck, Comparator<Card> cmp, String type) {
         List<Card> defaultCards = defaultDeck.getCards();
 
         if (cards.containsAll(defaultCards)) {
@@ -65,6 +65,7 @@ public class GameFactory {
             loadBasicOperations(game);
             return game;
         }
-        throw new CardException("ERROR: Not enough cards for Belote");
+        // Possible problem, not sure
+        throw new CardException(String.format("ERROR: Not enough cards for %s", type));
     }
 }
