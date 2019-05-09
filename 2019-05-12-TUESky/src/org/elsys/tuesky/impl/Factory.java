@@ -12,22 +12,18 @@ import java.util.List;
 public class Factory {
 
     public static TripBuilder startTrip() {
-        // TODO implement me!
-        return null;
+        return new TripBuilderImpl();
     }
 
     public static Flight createFlight(String from, String to, Duration duration) {
-        // TODO implement me!
-        return null;
+        return new FlightImpl(duration, from, to);
     }
 
     public static Layover createLayover(Duration duration) {
-        // TODO implement me!
-        return null;
+        return new LayoverImpl(duration);
     }
 
     public static Planner createPlanner(List<Trip> trips) {
-        // TODO implement me!
-        return null;
+        return new PlannerImpl(trips);
     }
 }

@@ -2,11 +2,12 @@ package org.elsys.tuesky.impl.trips;
 
 import org.elsys.tuesky.api.trips.Flight;
 import org.elsys.tuesky.impl.Factory;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
+
 
 public class FlightTest {
 
