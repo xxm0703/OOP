@@ -12,7 +12,7 @@ public class TripImpl implements Trip {
     private List<TripUnit> nodes;
     private int units;
 
-    public TripImpl(List<TripUnit> nodes) {
+    TripImpl(List<TripUnit> nodes) {
         this.nodes = nodes;
         units = nodes.size();
     }
@@ -29,12 +29,12 @@ public class TripImpl implements Trip {
 
     @Override
     public String getDestination() {
-        return ((Flight) nodes[0]).getDestination();
+        return ((Flight) nodes.get(0)).getDestination();
     }
 
     @Override
     public Duration getDuration() {
-        return null;
+        return nodes.stream().;
     }
 
     @Override

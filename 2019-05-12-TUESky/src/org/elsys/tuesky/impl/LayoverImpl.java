@@ -8,7 +8,7 @@ public class LayoverImpl implements Layover {
 
     private Duration duration;
 
-    public LayoverImpl(Duration duration) {
+    LayoverImpl(Duration duration) {
         assert(duration != null);
 
         this.duration = duration;

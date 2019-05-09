@@ -24,6 +24,6 @@ public class TripBuilderImpl implements TripBuilder {
 
     @Override
     public Trip end() {
-        return null;
+        return new TripImpl(units);
     }
 }

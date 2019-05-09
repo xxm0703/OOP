@@ -6,29 +6,24 @@ import org.elsys.tuesky.api.trips.Trip;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PlannerImpl implements Planner {
-    List<Trip> trips;
+    private Stream<Trip> trips;
 
-    public PlannerImpl(List<Trip> trips) {
-        this.trips = trips;
+    PlannerImpl(List<Trip> trips) {
+        this.trips = trips.stream();
     }
 
     @Override
     public List<Trip> search(TripQuery query) {
-        List<Trip> matching = new ArrayList<>();
-
-        for (Trip trip : trips)
-            if (trip.matches(query))
-                matching.add(trip);
-
-        return matching;
+        return trips.filter((trip) -> trip.matches(query)).collect(Collectors.toList());
     }
 
     @Override
     public boolean anyMatch(TripQuery query) {
-        // Not the best way but short enough
-        return !search(query).isEmpty();
+        return trips.anyMatch((trip) -> trip.matches(query));
     }
 
     @Override
