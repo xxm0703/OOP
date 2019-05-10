@@ -9,15 +9,14 @@ import java.util.List;
 
 public class TripBuilderImpl implements TripBuilder {
 
-    List<TripUnit> units;
+    private List<TripUnit> units;
 
     TripBuilderImpl() {
         this.units = new ArrayList<>();
     }
 
     @Override
-    public TripBuilder then(TripUnit nextUnit) {
-        // TODO check validness
+    public TripBuilder then(final TripUnit nextUnit) {
         units.add(nextUnit);
         return this;
     }

@@ -5,7 +5,7 @@ import org.elsys.tuesky.api.trips.Trip;
 public final class QueryByOrigin extends TripQueryImpl {
     private final String expectedOrigin;
 
-    public QueryByOrigin(String expectedOrigin) {
+    public QueryByOrigin(final String expectedOrigin) {
         this.expectedOrigin = expectedOrigin;
     }
 

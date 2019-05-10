@@ -69,7 +69,7 @@ public final class TripImpl implements Trip {
         return flights()
                 .map(tripUnit -> ((Flight)tripUnit).getOrigin())
                 .skip(1)
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
 
     }
 

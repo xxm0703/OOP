@@ -15,15 +15,15 @@ public final class Factory {
         return new TripBuilderImpl();
     }
 
-    public static Flight createFlight(String from, String to, Duration duration) {
+    public static Flight createFlight(final String from, final String to,final Duration duration) {
         return new FlightImpl(duration, from, to);
     }
 
-    public static Layover createLayover(Duration duration) {
+    public static Layover createLayover(final Duration duration) {
         return new LayoverImpl(duration);
     }
 
-    public static Planner createPlanner(List<Trip> trips) {
+    public static Planner createPlanner(final List<Trip> trips) {
         return new PlannerImpl(trips);
     }
 }

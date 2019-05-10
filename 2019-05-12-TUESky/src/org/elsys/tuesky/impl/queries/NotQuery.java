@@ -6,7 +6,7 @@ import org.elsys.tuesky.api.trips.Trip;
 public final class NotQuery extends TripQueryImpl {
     private final TripQuery a;
 
-    NotQuery(TripQuery a) {
+    NotQuery(final TripQuery a) {
         this.a = a;
     }
 

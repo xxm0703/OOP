@@ -5,7 +5,7 @@ import org.elsys.tuesky.api.trips.Trip;
 public final class QueryByDestination extends TripQueryImpl {
     private final String expectedDestination;
 
-    public QueryByDestination(String expectedDestination) {
+    public QueryByDestination(final String expectedDestination) {
         this.expectedDestination = expectedDestination;
     }
 

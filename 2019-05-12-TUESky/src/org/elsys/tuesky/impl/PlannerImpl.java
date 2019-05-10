@@ -10,25 +10,25 @@ import java.util.stream.Collectors;
 public final class PlannerImpl implements Planner {
     private final List<Trip> trips;
 
-    public PlannerImpl(List<Trip> trips) {
+    PlannerImpl(List<Trip> trips) {
         this.trips = trips;
     }
 
     @Override
-    public List<Trip> search(TripQuery query) {
+    public List<Trip> search(final TripQuery query) {
         return trips.stream()
                 .filter((trip) -> trip.matches(query))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
-    public boolean anyMatch(TripQuery query) {
+    public boolean anyMatch(final TripQuery query) {
         return trips.stream()
                 .anyMatch((trip) -> trip.matches(query));
     }
 
     @Override
-    public int count(TripQuery query) {
+    public int count(final TripQuery query) {
         return search(query).size();
     }
 }

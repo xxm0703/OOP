@@ -6,7 +6,7 @@ import org.elsys.tuesky.api.trips.Trip;
 public final class OrQuery extends TripQueryImpl {
     private final TripQuery a, b;
 
-    OrQuery(TripQuery a, TripQuery b) {
+    OrQuery(final TripQuery a, final TripQuery b) {
         this.a = a;
         this.b = b;
     }

@@ -6,7 +6,7 @@ import org.elsys.tuesky.impl.TripImpl;
 public final class QueryByMiddlePoint extends TripQueryImpl {
     private final String middlePoint;
 
-    public QueryByMiddlePoint(String middlePoint) {
+    public QueryByMiddlePoint(final String middlePoint) {
         this.middlePoint = middlePoint;
     }
 

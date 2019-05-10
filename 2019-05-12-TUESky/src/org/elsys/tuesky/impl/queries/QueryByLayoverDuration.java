@@ -7,7 +7,7 @@ import java.time.Duration;
 public final class QueryByLayoverDuration extends TripQueryImpl {
     private final Duration maxDuration;
 
-    public QueryByLayoverDuration(Duration maxDuration) {
+    public QueryByLayoverDuration(final Duration maxDuration) {
         this.maxDuration = maxDuration;
     }
 

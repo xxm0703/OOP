@@ -6,7 +6,7 @@ import org.elsys.tuesky.api.trips.Trip;
 public final class AndQuery extends TripQueryImpl {
     private final TripQuery a, b;
 
-    AndQuery(TripQuery a, TripQuery b) {
+    AndQuery(final TripQuery a, TripQuery b) {
         this.a = a;
         this.b = b;
     }

@@ -6,7 +6,7 @@ import java.time.Duration;
 
 public final class LayoverImpl implements Layover {
 
-    private Duration duration;
+    private final Duration duration;
 
     LayoverImpl(Duration duration) {
         assert(duration != null);
