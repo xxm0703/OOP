@@ -87,4 +87,15 @@ public class PlannerTest {
         assertEquals(2, planner.count(Trips.withMaxLayoverDuration(Duration.ofHours(10))));
         assertEquals(1, planner.count(Trips.withMaxDuration(Duration.ofHours(10))));
     }
+
+    @Test
+    public void testLogicRelations() {
+        assertEquals(tripList.subList(1, 2), planner.search(Trips.withMaxFlights(3)
+                .and(Trips.via("Eindhoven"))));
+
+        assertEquals(tripList.subList(0, 3), planner.search(Trips.via("London")
+                .or(Trips.withDestination("Xania"))));
+
+        assertEquals(tripList.subList(0, 3), planner.search(Trips.withMaxDuration(Duration.ofHours(1)).not()));
+    }
 }
