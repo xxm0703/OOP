@@ -2,7 +2,7 @@ package org.elsys.tuesky.impl.queries;
 
 import org.elsys.tuesky.api.trips.Trip;
 
-public class QueryByDestination extends TripQueryImpl {
+public final class QueryByDestination extends TripQueryImpl {
     private final String expectedDestination;
 
     public QueryByDestination(String expectedDestination) {

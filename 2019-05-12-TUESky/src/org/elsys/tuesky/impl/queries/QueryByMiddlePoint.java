@@ -3,7 +3,7 @@ package org.elsys.tuesky.impl.queries;
 import org.elsys.tuesky.api.trips.Trip;
 import org.elsys.tuesky.impl.TripImpl;
 
-public class QueryByMiddlePoint extends TripQueryImpl {
+public final class QueryByMiddlePoint extends TripQueryImpl {
     private final String middlePoint;
 
     public QueryByMiddlePoint(String middlePoint) {

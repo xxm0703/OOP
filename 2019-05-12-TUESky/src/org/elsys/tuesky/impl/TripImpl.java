@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TripImpl implements Trip {
+public final class TripImpl implements Trip {
     private final List<TripUnit> nodes;
     private final int unitsCount;
 

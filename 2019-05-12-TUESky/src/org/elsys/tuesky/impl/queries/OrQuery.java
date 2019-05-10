@@ -3,7 +3,7 @@ package org.elsys.tuesky.impl.queries;
 import org.elsys.tuesky.api.planner.TripQuery;
 import org.elsys.tuesky.api.trips.Trip;
 
-public class OrQuery extends TripQueryImpl {
+public final class OrQuery extends TripQueryImpl {
     private final TripQuery a, b;
 
     OrQuery(TripQuery a, TripQuery b) {

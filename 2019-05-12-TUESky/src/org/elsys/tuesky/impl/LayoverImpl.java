@@ -4,7 +4,7 @@ import org.elsys.tuesky.api.trips.Layover;
 
 import java.time.Duration;
 
-public class LayoverImpl implements Layover {
+public final class LayoverImpl implements Layover {
 
     private Duration duration;
 

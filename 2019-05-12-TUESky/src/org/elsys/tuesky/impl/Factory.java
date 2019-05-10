@@ -9,7 +9,7 @@ import org.elsys.tuesky.api.trips.TripBuilder;
 import java.time.Duration;
 import java.util.List;
 
-public class Factory {
+public final class Factory {
 
     public static TripBuilder startTrip() {
         return new TripBuilderImpl();

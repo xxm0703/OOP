@@ -2,7 +2,7 @@ package org.elsys.tuesky.impl.queries;
 
 import org.elsys.tuesky.api.trips.Trip;
 
-public class QueryByFlights extends TripQueryImpl {
+public final class QueryByFlights extends TripQueryImpl {
     private final int maxFlights;
 
     public QueryByFlights(int maxFlights) {

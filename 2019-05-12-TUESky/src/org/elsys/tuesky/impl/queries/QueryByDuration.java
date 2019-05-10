@@ -4,7 +4,7 @@ import org.elsys.tuesky.api.trips.Trip;
 
 import java.time.Duration;
 
-public class QueryByDuration extends TripQueryImpl {
+public final class QueryByDuration extends TripQueryImpl {
 
     private final Duration maxDuration;
 

@@ -5,7 +5,7 @@ import org.elsys.tuesky.impl.queries.*;
 
 import java.time.Duration;
 
-public class Trips {
+public final class Trips {
 
     public static TripQuery withOrigin(String origin) {
         return new QueryByOrigin(origin);

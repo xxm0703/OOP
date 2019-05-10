@@ -4,7 +4,7 @@ import org.elsys.tuesky.api.trips.Flight;
 
 import java.time.Duration;
 
-public class FlightImpl implements Flight {
+public final class FlightImpl implements Flight {
     private Duration duration;
     private String origin, destination;
 
