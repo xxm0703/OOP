@@ -1,28 +1,24 @@
-package org.elsys.tuesky.impl;
+package org.elsys.tuesky.impl.queries;
 
 import org.elsys.tuesky.api.planner.TripQuery;
 import org.elsys.tuesky.api.trips.Trip;
 
-public class TripQueryImpl implements TripQuery {
-    Trip template;
+public abstract class TripQueryImpl implements TripQuery {
 
-    @Override
-    public boolean matches(Trip trip) {
-        return false;
-    }
+    public abstract boolean matches(Trip trip);
 
     @Override
     public TripQuery and(TripQuery query) {
-        return null;
+        return new AndQuery(this, query);
     }
 
     @Override
     public TripQuery or(TripQuery query) {
-        return null;
+        return new OrQuery(this, query);
     }
 
     @Override
     public TripQuery not() {
-        return null;
+        return new NotQuery(this);
     }
 }
