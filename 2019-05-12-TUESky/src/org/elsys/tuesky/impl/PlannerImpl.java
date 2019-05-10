@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class PlannerImpl implements Planner {
     private final List<Trip> trips;
 
-    PlannerImpl(List<Trip> trips) {
+    public PlannerImpl(List<Trip> trips) {
         this.trips = trips;
     }
 

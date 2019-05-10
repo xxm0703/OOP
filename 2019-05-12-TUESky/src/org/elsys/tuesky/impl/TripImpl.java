@@ -9,6 +9,7 @@ import org.elsys.tuesky.api.trips.TripUnit;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -91,5 +92,18 @@ public class TripImpl implements Trip {
             if (!flights.get(i).getDestination().equals(flights.get(i+1).getOrigin()))
                 throw new TUESkyException();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TripImpl trip = (TripImpl) o;
+        return nodes.equals(trip.nodes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodes, unitsCount);
     }
 }

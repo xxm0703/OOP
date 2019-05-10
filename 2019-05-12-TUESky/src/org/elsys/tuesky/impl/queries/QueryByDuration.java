@@ -8,7 +8,7 @@ public class QueryByDuration extends TripQueryImpl {
 
     private final Duration maxDuration;
 
-    QueryByDuration(Duration maxDuration) {
+    public QueryByDuration(Duration maxDuration) {
         this.maxDuration = maxDuration;
     }
 

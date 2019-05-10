@@ -13,7 +13,7 @@ public class QueryByLayoverDuration extends TripQueryImpl {
 
     @Override
     public boolean matches(Trip trip) {
-        return trip.getDuration()
+        return trip.getLayoverDuration()
                 .compareTo(maxDuration) <= 0;
     }
 }
