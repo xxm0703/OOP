@@ -1,18 +1,17 @@
-package org.elsys.bank;
+package org.elsys;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.Arrays;
 
 public class Bank {
     public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Bill b = new Bill(15);
-        Class<? extends Bill> bClass = b.getClass();
+        final Bill b = new Bill(15);
+        final Class<? extends Bill> bClass = b.getClass();
+
         System.out.println(bClass.getName());
         System.out.println(bClass.getSuperclass().getName());
 
+        // Stream version
         Arrays.stream(bClass.getInterfaces())
                 .map(Class::getName)
                 .forEach(System.out::println);
@@ -25,34 +24,54 @@ public class Bank {
                 .map(Modifier::toString)
                 .forEach(System.out::println);
 
-            Method getValue = bClass.getDeclaredMethod("getValue");
-            System.out.println(getValue.invoke(b));
 
+        /* Loop version
+
+        for (Class<?> aClass : bClass.getInterfaces()) {
+            String name = aClass.getName();
+            System.out.println(name);
+        }
+
+        for (Constructor<?> constructor : bClass.getDeclaredConstructors()) {
+            System.out.println(constructor);
+        }
+
+        for (Field field : bClass.getDeclaredFields()) {
+            Integer modifiers = field.getModifiers();
+            String s = Modifier.toString(modifiers);
+            System.out.println(s);
+        }
+
+        */
+
+        Method getValue = bClass.getDeclaredMethod("getValue");
+
+        System.out.println(getValue.invoke(b));
         System.out.println(serializer(b));
 
     }
-    public static String serializer(Object obj) {
-        Class<?> objClass = obj.getClass();
+
+    private static String serializer(final Object obj) throws IllegalAccessException {
+        final Class<?> objClass = obj.getClass();
         StringBuilder result = new StringBuilder();
 
+        // Opening signature
         result.append(objClass.getName())
-                .append(" /\n");
+                .append("/\n");
 
-        Arrays.stream(objClass.getDeclaredFields())
-        .peek(field -> field.setAccessible(true))
-        .forEach(field -> {
-            try {
-                result.append(field.getName())
-                        .append(" = ")
-                        .append(field.get(obj))
-                        .append("\n");
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        });
+        // Contents (fields)
+        for (Field field : objClass.getDeclaredFields()) {
+            field.setAccessible(true);  // Makes private fields visible
+
+            result.append(field.getName())
+                    .append(" = ")
+                    .append(field.get(obj))
+                    .append("\n");
+        }
 
 
-        result.append("/ ")
+        // Closing signature
+        result.append("/")
                 .append(objClass.getName());
 
         return result.toString();

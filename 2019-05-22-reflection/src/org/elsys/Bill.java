@@ -1,8 +1,8 @@
-package org.elsys.bank;
+package org.elsys;
 
 public class Bill implements Comparable<Bill> {
 
-    private int value;
+    private final int value;
 
     public Bill(int value) {
         this.value = value;
@@ -14,10 +14,6 @@ public class Bill implements Comparable<Bill> {
 
     public int getValue() {
         return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
     }
 
     @Override
